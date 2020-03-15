@@ -1,10 +1,14 @@
 import {assert} from "chai";
-import {loop} from "../../src/main";
-import {Game, Memory} from "./mock"
+import {Game, Memory} from "./mock";
+import {GameManager} from "../../src/GameManager";
+import '../../src/constants'
+import loop = GameManager.loop;
 
-describe("main", () => {
+
+describe("loop", () => {
   before(() => {
     // runs before all test in this block
+
   });
 
   beforeEach(() => {
@@ -22,4 +26,8 @@ describe("main", () => {
   it("should return void when called with no context", () => {
     assert.isUndefined(loop());
   });
+
+  it("Test global constants accessible", () => {
+    assert.equal(global.consts.MY_ROLE_MOVER, 'Mover')
+  })
 });

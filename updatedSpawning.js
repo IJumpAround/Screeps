@@ -363,33 +363,41 @@ let updatedSpawning = {
    * @param {number} energy_capacity
    * @param subclass
    */
-  roleToBodyV2: function(role, energy_capacity, subclass=null) {
-      let weights = MY_ROLE_BODY_PART_RATIOS[role]
-      let final_parts = []
+  roleToBodyV2: function(role, energy_capacity, subclass = null) {
+    let weights = MY_ROLE_BODY_PART_RATIOS[role];
+    let final_parts = [];
 
-      let parts = Object.keys(weights)
+    let parts = Object.keys(weights);
+    let remaining_energy = energy_capacity;
+    //Ensure we get 1 of each part at a minimum
+    parts.forEach((part) => {
+      remaining_energy -= BODYPART_COST[part];
+    });
 
-      // Ensure we get 1 of each part at a minimum
-      // parts.forEach((part) => {
-      //     energy_spent += BODYPART_COST[part]
-      // })
-      // energy_remaining -= energy_spent
-      // final_parts.concat(parts)
+    if (remaining_energy < 0) {
+      console.error("ERROR Creep is too expensive to create!");
+      return null;
+    }
+
+    final_parts.concat(parts);
 
 
-      parts.forEach((part) => {
-          let cost = BODYPART_COST[part]
-          let target_spending = weights[part] * energy_capacity
-          let target_num_parts = Math.floor(target_spending / cost)
-          // Minimum of 1 of each part
-          let num_parts = (target_num_parts > 0) ? target_num_parts: 1
+    parts.forEach((part) => {
 
-          let parts = Array.from({length:num_parts}).map(x => part)
-          final_parts = final_parts.concat(parts)
+      let cost = BODYPART_COST[part];
+      let target_spending = weights[part] * remaining_energy;
+      let target_num_parts = Math.floor(target_spending / cost);
+      // Minimum of 1 of each part
+      let num_parts = (target_num_parts > 0) ? target_num_parts : 1;
 
-      })
+      remaining_energy -= num_parts * cost;
 
-        return final_parts
+      let parts = Array.from({ length: num_parts }).map(x => part);
+      final_parts = final_parts.concat(parts);
+
+    });
+
+    return final_parts;
 
 
   }

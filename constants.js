@@ -80,6 +80,23 @@ global.MY_ROLE_BODY_PART_RATIOS = {
         [WORK]: 0.40,
         [CARRY]: 0.20,
         [MOVE]: 0.40,
+    },
+
+    [MY_ROLE_DEFENDER]: {
+        [TOUGH]: 0.40,
+        [MOVE]: 0.15,
+        [ATTACK]: 0.25,
+    },
+
+    [MY_ROLE_HEALER]: {
+        [TOUGH]: 0.33,
+        [MOVE]: 0.33,
+        [HEAL]: 0.33,
+    },
+
+    [MY_ROLE_CLAIMER]: {
+        [CLAIM]: 0.60,
+        [MOVE]: 0.40
     }
 }
 

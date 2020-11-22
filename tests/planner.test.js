@@ -22,7 +22,7 @@ test("Test is_source_path_stored when path is in memory", () => {
 
   global.Room = {
     deserializePath(path) {
-      console.log('deserializepath called with ', path);
+      console.log('deserializePath called with ', path);
       return `deserialized ${path}`
     }
   }

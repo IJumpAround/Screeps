@@ -1,11 +1,11 @@
 let updatedSpawning = {
     /**
      *  @param {Creep[]} creepsSpawnedHere
-        @param {object} numCreeps - number of creeps per role from the given room - numCreeps[creepRole] = #
+        @param {CreepCount} numCreeps - number of creeps per role from the given room - numCreeps[creepRole] = #
         @param {StructureSpawn} spawner - the spawner
         @param {number} [tier] -  tier of the creep body to spawn
     **/
-    run : function(creepsSpawnedHere, numCreeps, spawner, tier=null)
+    run : function(creepsSpawnedHere, numCreeps, spawner, tier)
     {
         let capacity = spawner.room.energyCapacityAvailable
         // TODO do away with tier system pick parts and set capacity dynamically
@@ -141,9 +141,6 @@ let updatedSpawning = {
         if(creepList.length > 0)
             room_name = creepList[0].room.name;
         else {
-            // room_name = memory_interface.list_sources(spawn_room)
-            // room_name = Object.keys(Memory.rooms[creepList[0].room.room_name].mySources)[0]
-            // // room_name = Object.keys(Memory.mySources)[0]
             room_name = spawn_room
         }
 

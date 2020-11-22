@@ -12,19 +12,6 @@ global.MY_MAX_DEFENDERS = 1;
 //Amount of movers allowed per source
 global.MY_MOVERS_PER_SOURCE = 1;
 
-//Room names
-//global.MY_MINING_ROOMS = ['W11N46']
-//global.MY_SAFEROOMS = ['W11N46'];
-
-//global.MY_SPAWN_ROOMS = ['W11N46'];
-
-//setting home sources
-//global.MY_SOURCES = ['58dbc5428283ff5308a402b7','58dbc5448283ff5308a402f7','58dbc5448283ff5308a402f5','58dbc5428283ff5308a402b5','58dbc5448283ff5308a402f3'];
-//global.MY_SOURCES = {'E84N97':['58dbc5428283ff5308a402b7','58dbc5448283ff5308a402f7','58dbc5448283ff5308a402f5','58dbc5428283ff5308a402b5','58dbc5448283ff5308a402f3']
-//};
-//global.MY_OUTER_SOURCES = ['58dbc5448283ff5308a402f5','58dbc5428283ff5308a402b5','58dbc5448283ff5308a402f1','58dbc5448283ff5308a402f3','58dbc5418283ff5308a402b2'];
-
-
 //roles
 //ECONOMY
 global.MY_ROLE_UPGRADER = 'upgrader';
@@ -36,6 +23,9 @@ global.MY_ROLE_CLAIMER = 'claimer';
 //WARTIME
 global.MY_ROLE_DEFENDER= 'defender';
 global.MY_ROLE_HEALER = 'healer';
+
+global.MY_ROLE_HARVESTER_STATIONARY = 'stationary;'
+global.MY_ROLE_HARVESTER_MOBILE = 'mobile';
 
 //ACTIONS
 global.MY_ACTION_RETRIEVE = 'retrieve';
@@ -55,6 +45,46 @@ global.MY_TIER2_BODY_TYPES = {
     'healer' : [TOUGH,TOUGH,TOUGH,HEAL,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE],
     'defender' : [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
 };
+
+
+global.MY_ROLE_BODY_PART_RATIOS = {
+    MY_ROLE_CLAIMER: {
+        'CLAIM': 0.50,
+        'MOVE': 0.50,
+    },
+
+    MY_ROLE_HARVESTER: {
+        MY_ROLE_HARVESTER_STATIONARY: {
+            WORK: 0.60,
+            CARRY: 0.20,
+            MOVE: 0.20,
+        },
+        MY_ROLE_HARVESTER_MOBILE: {
+            WORK: 0.40,
+            CARRY: 0.30,
+            MOVE: 0.30,
+        }
+    },
+
+    MY_ROLE_BUILDER: {
+        WORK: 0.30,
+        CARRY: 0.40,
+        MOVE: 0.30,
+    },
+
+    MY_ROLE_MOVER: {
+        WORK: 0.10,
+        CARRY: 0.40,
+        MOVE: 0.50,
+    },
+
+    MY_ROLE_UPGRADER: {
+        WORK: 0.40,
+        CARRY: 0.20,
+        MOVE: 0.40,
+    }
+}
+
 
 //Body types
 //RC3

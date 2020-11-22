@@ -1,4 +1,5 @@
 let updatedSpawning = {
+
   /**
    *  @param {Creep[]} creepsSpawnedHere
    @param {CreepCount} numCreeps - number of creeps per role from the given room - numCreeps[creepRole] = #
@@ -224,48 +225,7 @@ let updatedSpawning = {
     return creepType;
   },
 
-// //****************************************************************************
-//   /**
-//    turns the creep role constant into an array of body parts
-//    @return {string} Body type to pass to the spawner
-//    @param {string} role - String constant for the creep role
-//    @param numCreeps
-//    @param {number} [tier=null] - body type tier to use
-//    **/
-//   roleToBody: function(role, numCreeps, tier = null) {
-//
-//     let bodyList = {};
-//
-//     switch (tier) {
-//       case 1: {
-//         return [WORK, CARRY, MOVE];
-//         break;
-//       }
-//       case 2: {
-//         bodyList = MY_TIER2_BODY_TYPES;
-//         break;
-//       }
-//       case 3: {
-//         bodyList = MY_TIER3_BODYTYPES;
-//         break;
-//       }
-//       case 4: {
-//         bodyList = MY_TIER4_BODY_TYPES;
-//         break;
-//       }
-//       default : {
-//         bodyList = MY_TIER5_BODY_TYPES;
-//         break;
-//       }
-//     }
-//     let bodyType = bodyList[role];
-//     if (numCreeps[MY_ROLE_HARVESTER] <= 1 || numCreeps[MY_ROLE_MOVER] <= 1) {
-//       bodyType = [WORK, CARRY, MOVE];
-//     }
-//
-//
-//     return bodyType;
-//   },
+
 
   /**
    * Convert a role to a set of body parts for spawning

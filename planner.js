@@ -9,7 +9,6 @@ let planner = {
         let room_obj = Game.rooms[room_name]
         let find_results = room_obj.find(FIND_SOURCES)
 
-        console.log('hasownproprsource', JSON.stringify(find_results))
         for (let index = 0; index < find_results.length; index++) {
 
             let id = find_results[index].id

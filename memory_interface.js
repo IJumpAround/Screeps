@@ -98,6 +98,9 @@ let memory_interface = {
 
         creep.memory.homeSource = source;
     }
+
+
+
 }
 
 module.exports = memory_interface

@@ -48,40 +48,38 @@ global.MY_TIER2_BODY_TYPES = {
 
 
 global.MY_ROLE_BODY_PART_RATIOS = {
-    MY_ROLE_CLAIMER: {
-        'CLAIM': 0.50,
-        'MOVE': 0.50,
+    [MY_ROLE_CLAIMER]: {
+        [CLAIM]: 0.50,
+        [MOVE]: 0.50,
     },
 
-    MY_ROLE_HARVESTER: {
-        MY_ROLE_HARVESTER_STATIONARY: {
-            WORK: 0.60,
-            CARRY: 0.20,
-            MOVE: 0.20,
-        },
-        MY_ROLE_HARVESTER_MOBILE: {
-            WORK: 0.40,
-            CARRY: 0.30,
-            MOVE: 0.30,
-        }
+    [MY_ROLE_HARVESTER]: {
+        [WORK]: 0.60,
+        [CARRY]: 0.20,
+        [MOVE]: 0.20
+        // [MY_ROLE_HARVESTER_MOBILE]: {
+        //     [WORK]: 0.40,
+        //     [CARRY]: 0.30,
+        //     [MOVE]: 0.30,
+        // }
     },
 
-    MY_ROLE_BUILDER: {
-        WORK: 0.30,
-        CARRY: 0.40,
-        MOVE: 0.30,
+    [MY_ROLE_BUILDER]: {
+        [WORK]: 0.30,
+        [CARRY]: 0.40,
+        [MOVE]: 0.30,
     },
 
-    MY_ROLE_MOVER: {
-        WORK: 0.10,
-        CARRY: 0.40,
-        MOVE: 0.50,
+    [MY_ROLE_MOVER]: {
+        [WORK]: 0.10,
+        [CARRY]: 0.40,
+        [MOVE]: 0.50,
     },
 
-    MY_ROLE_UPGRADER: {
-        WORK: 0.40,
-        CARRY: 0.20,
-        MOVE: 0.40,
+    [MY_ROLE_UPGRADER]: {
+        [WORK]: 0.40,
+        [CARRY]: 0.20,
+        [MOVE]: 0.40,
     }
 }
 

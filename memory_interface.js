@@ -67,7 +67,7 @@ let memory_interface = {
         let mem_room = Memory.rooms[room]
         let result = []
         if(mem_room) {
-            result = Object.keys(mem_room)
+            result = Object.keys(mem_room.mySources)
         }
         return result
     }

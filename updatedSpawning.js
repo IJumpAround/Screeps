@@ -22,7 +22,9 @@ let updatedSpawning = {
         if(creepRole != null){
             body = this.roleToBody(creepRole,numCreeps,tier);
 
-            if(spawner.spawnCreep(body, null,{dryRun: true}) === 0) {
+            let dry_run = spawner.spawnCreep(body, "Dry run", {dryRun: true})
+            console.log(`dry run spawn result: ${dry_run}`);
+            if(dry_run === 0) {
                 this.spawn(creepsSpawnedHere, creepRole,body,spawner);
             }
         }
@@ -35,12 +37,13 @@ let updatedSpawning = {
     @param {StructureSpawn} spawner
 **/
     spawn : function(creepsSpawnedHere, creepRole, body, spawner){
+    console.log(`trying to spawn ${creepRole} with ${body}`);
         let creepName = this.makeCreepName(creepRole);
         let roomName = spawner.room.name;
         let timeCost = require('utilities').calculateTimeCost(body);
         //console.log(creepRole);
 
-        let options = SpawnOptions({memory: {role: creepRole}})
+        let options = {memory: {role: creepRole}}
         switch(creepRole){
             case MY_ROLE_HARVESTER:{
                 options.memory.homeSource = this.genericGetHome(creepsSpawnedHere, creepRole, timeCost, roomName)

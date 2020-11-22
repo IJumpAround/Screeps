@@ -43,13 +43,13 @@ let updatedSpawning = {
         let options = SpawnOptions({memory: {role: creepRole}})
         switch(creepRole){
             case MY_ROLE_HARVESTER:{
-                options.memory.homeSource = this.genericGetHome(creepsSpawnedHere, creepRole, timeCost)
+                options.memory.homeSource = this.genericGetHome(creepsSpawnedHere, creepRole, timeCost, roomName)
                 options.memory.spawnerRoom = roomName
                 spawner.spawnCreep(body, creepName, options);
                 break;
             }
             case MY_ROLE_MOVER:{
-                let creepHome = this.genericGetHome(creepsSpawnedHere, creepRole,timeCost);
+                let creepHome = this.genericGetHome(creepsSpawnedHere, creepRole,timeCost, roomName);
                 options.memory.homeSource = creepHome;
                 options.memory.homeRoom = null
                 options.memory.retrieving = true
@@ -129,22 +129,26 @@ let updatedSpawning = {
     *@param {Creep[]} creeps - list of all creeps produced by this spawn
     *@param {string} role - creep roletype
     *@param {number} bodyTimeCost - number of ticks to spawn the creep
+     * @param {string} spawn_room
     *@returns {string} - id of the homeSource
     **/
-    genericGetHome: function(creeps, role, bodyTimeCost) {
+    genericGetHome: function(creeps, role, bodyTimeCost, spawn_room) {
         let creepList = _.filter(creeps, (c) => c.memory.role === role && c.ticksToLive > bodyTimeCost);
-
-        let name;
+        let room_name;
         if(creepList.length > 0)
-            name = creepList[0].room.name;
-        else
-            name = Object.keys(Memory.mySources)[0]
+            room_name = creepList[0].room.name;
+        else {
+            // room_name = memory_interface.list_sources(spawn_room)
+            // room_name = Object.keys(Memory.rooms[creepList[0].room.room_name].mySources)[0]
+            // // room_name = Object.keys(Memory.mySources)[0]
+            room_name = spawn_room
+        }
 
-        let idList;
-        if (Memory.mySources)
-            idList = Object.keys(Memory.mySources[name]);    //id list
-        else
-            idList = [];
+        let idList = memory_interface.list_sources(room_name)
+
+        // idList = Object.keys(Memory.mySources[room_name]);    //id list
+        // else
+        //     idList = [];
 
 
         let counter = {}; //{sourceID,counter}
@@ -154,11 +158,11 @@ let updatedSpawning = {
             counter[id] = 0;
         }
         //count sources occupied
-        for(let creep in creepList){
+        for(let i = 0; i < creepList.length; i++){
 
 //NOTE the memory.homeSource structure does not support this
             //should be changed to an ID that can lookup the position in memory
-            counter[creepList[creep].memory.homeSource]++;
+            counter[creepList[i].memory.homeSource]++;
         }
         //console.log(JSON.stringify(counter));
         let lowest = _.min(_.keys(counter), function(k) { return counter[k]; });

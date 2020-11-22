@@ -45,8 +45,10 @@ var helperFunctions = {
             let source = Game.getObjectById(id);
             if(source)
                 return source.pos;
-            else
-                return getPos(Memory.mySources[id]);
+            else {
+                let source_pos = memory_interface.lookup_source(id)
+                return getPos(source_pos)
+            }
         }
     }
 };

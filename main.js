@@ -20,8 +20,15 @@ let utilities = require('utilities');
 let memorySetup = require('memory_setup')
 
 
+//global functions
+global.getPos = require('helperFunctions').getRoomPosition;
+global.getRoom = require('helperFunctions').getRoomObject;
+global.getSourcePos = require('helperFunctions').getSourcePosition;
+global.memory_interface = require('memory_interface')
+global._ = require('lodash')
+
 memorySetup.init_memory()
-//var temp = require('Temp');
+
 
 //var targeting = require('targeting');
 
@@ -31,7 +38,7 @@ if (Memory.spawnRooms) {
     global.MY_SAFEROOMS = Object.keys(Memory.spawnRooms);
 }
 
-global._ = require('lodash')
+
 memorySetup.load_owned_rooms()
 let planner = require('planner')
 
@@ -45,17 +52,11 @@ module.exports.loop = function ()
 {
     let tick = Game.time
 
-    //global functions
-    global.getPos = require('helperFunctions').getRoomPosition;
-    global.getRoom = require('helperFunctions').getRoomObject;
-    global.getSourcePos = require('helperFunctions').getSourcePosition;
-    global.memory_interface = require('memory_interface')
-    //roleBuilder.findRepairTargets();
-    //VARIABLES
+
 
     //delete memory of dead creeps
     for(let i in Memory.creeps) {
-        if(!Game.creeps[i]) {
+        if(Memory.creeps.hasOwnProperty(i) && !Game.creeps[i]) {
             delete Memory.creeps[i];
         }
     }

@@ -11,13 +11,14 @@ let memorySetup = {
                 if (room.controller.owner.username === "Nickka") {
                     let name = room.name;
 
-                    if(!Memory.rooms[room].hasOwnProperty('mySources')) {
-                        Memory.rooms[room].mySources = {}
+                    if(!Memory.rooms.hasOwnProperty(name)) {
+                        Memory.rooms[name] = {}
                     }
 
-                    // if (!Memory.mySources.hasOwnProperty(name)) {
-                    //     Memory.mySources[name] = {};
-                    // }
+                    if(!Memory.rooms[name].hasOwnProperty('mySources')) {
+                        Memory.rooms[name].mySources = {}
+                    }
+
 
                     if (!Memory.spawnRooms[name]) {
                         Memory.spawnRooms[name] = 1;
@@ -31,15 +32,18 @@ let memorySetup = {
                         for (let s = 0; s < sources.length; s++) {
                             let source = sources[s];
                             let sourceID = source.id;
-                            Memory.mySources[name][sourceID] = source.pos;
-
+                            memory_interface.store_source(sourceID, source.pos)
                         }
 
+                    } else {
+                        console.log("No new sources to add into memory")
                     }
                 }
             }
         }
         catch (ex) {
+            console.log(ex);
+            console.log(ex.stack)
             this.init_memory()
         }
     },

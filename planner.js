@@ -2,7 +2,7 @@ let planner = {
 
     source_paths: {},
     /**
-     *
+     * Generate road construction sites between each source in a room and the controller
      * @param {string} room_name
      */
     source_roads: function (room_name) {
@@ -23,7 +23,7 @@ let planner = {
     },
 
     /**
-     *
+     * Actually create the construction sites for each path
      * @param {Room} room_obj
      * @param {Source} source
      */
@@ -68,15 +68,14 @@ let planner = {
     },
 
     /**
-     *
-     * @param {}serialized_paths
+     * Load serialized paths from memory into game objects and store them on this object
+     * @param serialized_paths
      */
     load_source_paths: function(serialized_paths) {
         for (let source_id in serialized_paths) {
             if (serialized_paths.hasOwnProperty(source_id)) {
                 let path = serialized_paths[source_id]
                 this.source_paths[source_id] = Room.deserializePath(path)
-                // this.source_paths[source_id] = paths.map((path) => Room.deserializePath(path))
             }
         }
     }

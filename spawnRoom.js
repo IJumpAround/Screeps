@@ -20,6 +20,9 @@ let spawnRoom = {
         'healer' : 0
     },
 
+    loaded_sources: {},
+    room: {},
+
     /**
     *@param {string} roomName - roomname
     **/
@@ -31,7 +34,7 @@ let spawnRoom = {
 
 
         //Get list of all creeps spawned by the spawner in this room and count them
-        let thisRoom = Game.rooms[roomName];
+        this.room = Game.rooms[roomName];
         let creepsSpawnedHere = _.filter(Game.creeps, (i) => i.memory.spawnerRoom === roomName);
         this.numCreeps.harvester = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HARVESTER);
         this.numCreeps.mover = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_MOVER);
@@ -42,12 +45,15 @@ let spawnRoom = {
         this.numCreeps.healer = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HEALER);
 
         //Get spawner and tower in this room
-        let spawner = thisRoom.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_SPAWN}});
+        let spawner = this.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_SPAWN}});
         spawner = spawner[0];
-        let tower = thisRoom.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+        let tower = this.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
 
-        let hostilesInRoom = _.filter(thisRoom.find(FIND_HOSTILE_CREEPS));
+        let hostilesInRoom = _.filter(this.room.find(FIND_HOSTILE_CREEPS));
 
+        if (this.loaded_sources.length === 0) {
+            this.loaded_sources = Memory.rooms['room'].mySources['source123']
+        }
         //Defense code
 
 
@@ -82,7 +88,6 @@ let spawnRoom = {
             switch (creep.memory.role){
 
         	    case MY_ROLE_HARVESTER:{
-                    console.log(name + " " + creep.ticksToLive);
                     if(creep.ticksToLive < spawnTime){
                         this.numCreeps[MY_ROLE_HARVESTER]--;
                      }

@@ -31,7 +31,7 @@ if (Memory.spawnRooms) {
     global.MY_SAFEROOMS = Object.keys(Memory.spawnRooms);
 }
 
-
+global._ = require('lodash')
 memorySetup.load_owned_rooms()
 let planner = require('planner')
 
@@ -44,9 +44,7 @@ let planner = require('planner')
 module.exports.loop = function ()
 {
     let tick = Game.time
-    //  Game.room.
-    //require('utilities').convertOldHomes()
-    //require('utilities').printBodyCost(MY_TIER5_BODY_TYPES['builder']);
+
     //global functions
     global.getPos = require('helperFunctions').getRoomPosition;
     global.getRoom = require('helperFunctions').getRoomObject;
@@ -63,12 +61,14 @@ module.exports.loop = function ()
     }
     //require('targeting').balanceTargets(MY_ROLE_BUILDER,['596b09cd35e5cd0a8e9fa3eb','test']);
 
+    // Iterate over rooms and run logic for each room
     let rooms = Object.keys(Memory.spawnRooms);
     console.log(`looping over rooms ${rooms}`)
     for(let i = 0; i < rooms.length; i++){
         let room = rooms[i];
         spawnRoom.run(room);
 
+        // Create road plans
         if (tick % 100 === 0) {
             planner.source_roads(room)
         }

@@ -1,13 +1,16 @@
-var updatedSpawning = {
+import "index.d.ts";
+
+let updatedSpawning = {
     /**
+     *  @param {Creep[]} creepsSpawnedHere
         @param {object} numCreeps - number of creeps per role from the given room - numCreeps[creepRole] = #
-        @param {Structure} spawner - the spawner
+        @param {StructureSpawn} spawner - the spawner
         @param {number} [tier] -  tier of the creep body to spawn
     **/
     run : function(creepsSpawnedHere, numCreeps, spawner, tier=null)
     {
         let capacity = spawner.room.energyCapacityAvailable
-
+        // TODO do away with tier system pick parts and set capacity dynamically
         if (capacity < 600){
             tier = 1;
         }
@@ -16,63 +19,73 @@ var updatedSpawning = {
         }
 
 
-        var body;
-        var creepRole = this.decideWhoToSpawn(numCreeps);
+        let body;
+        let creepRole = this.decideWhoToSpawn(numCreeps);
         if(creepRole != null){
             body = this.roleToBody(creepRole,numCreeps,tier);
 
-            if(spawner.canCreateCreep(body) !== 0)
-                return;
-            else{
+            if(spawner.spawnCreep(body, null,{dryRun: true}) === 0) {
                 this.spawn(creepsSpawnedHere, creepRole,body,spawner);
             }
         }
     },
 
 /**
- *  @param {object} creepsSpawnedHere
+ *  @param {Creep[]} creepsSpawnedHere
     @param {string} creepRole - creep role const
-    @param {string[]} body - array of body parts
+    @param {BodyPartConstant[]} body - array of body parts
     @param {StructureSpawn} spawner
 **/
     spawn : function(creepsSpawnedHere, creepRole, body, spawner){
-        var creepName = this.makeCreepName(creepRole);
-        var roomName = spawner.room.name;
-        var timeCost = require('utilities').calculateTimeCost(body);
+        let creepName = this.makeCreepName(creepRole);
+        let roomName = spawner.room.name;
+        let timeCost = require('utilities').calculateTimeCost(body);
         //console.log(creepRole);
 
+        let options = SpawnOptions({memory: {role: creepRole}})
         switch(creepRole){
-
             case MY_ROLE_HARVESTER:{
-                let creepHome = this.genericGetHome(creepsSpawnedHere, creepRole, timeCost);
-                spawner.createCreep(body,creepName,{role: creepRole, homeSource: creepHome,spawnerRoom: roomName });
+                options.memory.homeSource = this.genericGetHome(creepsSpawnedHere, creepRole, timeCost)
+                options.memory.spawnerRoom = roomName
+                spawner.spawnCreep(body, creepName, options);
                 break;
             }
             case MY_ROLE_MOVER:{
                 let creepHome = this.genericGetHome(creepsSpawnedHere, creepRole,timeCost);
-                if(creepHome)
-                    spawner.createCreep(body,creepName,{role: creepRole, homeSource: creepHome,homeRoom: null, retrieving: true,spawnerRoom: roomName});
-                else
-                    spawner.createCreep(body,creepName,{role: creepRole,homeSource: null, homeRoom: roomName, retrieving: true, spawnerRoom: roomName});
+                options.memory.homeSource = creepHome;
+                options.memory.homeRoom = null
+                options.memory.retrieving = true
+                options.memory.spawnerRoom = roomName
+                if(creepHome) {
+                    spawner.spawnCreep(body, creepName, options);
+                }
+                else {
+                    options.memory.homeRoom = roomName
+                    options.memory.homeSource = null
+                    spawner.spawnCreep(body,creepName,options);
+                    }
                 break;
             }
             //fallthrough
 
             case MY_ROLE_CLAIMER:{
-                let controllerHome = this.getClaimerHome();
-                spawner.createCreep(body,creepName,{role: creepRole,homeController: controllerHome, spawnerRoom: roomName});
+                options.memory.homeController = this.getClaimerHome()
+                options.memory.spawnerRoom = roomName
+                spawner.spawnCreep(body, creepName, options);
                 break;
             }
             case MY_ROLE_HEALER:
             case MY_ROLE_DEFENDER:
-            case MY_ROLE_UPGRADER:
-                {
-                      spawner.createCreep(body,creepName,{role: creepRole, spawnerRoom: roomName, upgrading: false});
+            case MY_ROLE_UPGRADER: {
+                options.memory.spawnerRoom = roomName
+                options.memory.upgrading = false
+                spawner.spawnCreep(body, creepName, options);
                 break;
-                }
+            }
             case MY_ROLE_BUILDER:
-            default:{
-                spawner.createCreep(body,creepName,{role: creepRole, spawnerRoom: roomName});
+            default: {
+                options.memory.spawnerRoom = roomName
+                spawner.spawnCreep(body, creepName, options);
                 break;
             }
         }
@@ -95,9 +108,9 @@ var updatedSpawning = {
     //Decide which controller the claimer should reserve
     getClaimerHome : function(){
             //list of claimers
-            var claimerList = _.filter(Game.creeps, (c) => c.memory.role === MY_ROLE_CLAIMER && c.ticksToLive > 50);
-            var idList = Object.keys(Memory.reservedControllers);    //id list
-            counter = {}; //{controllerid,counter}
+            let claimerList = _.filter(Game.creeps, (c) => c.memory.role === MY_ROLE_CLAIMER && c.ticksToLive > 50);
+            let idList = Object.keys(Memory.reservedControllers);    //id list
+            let counter = {}; //{controllerid,counter}
             //intialize counter
             for(let i in idList){
                 let id = idList[i];
@@ -121,7 +134,7 @@ var updatedSpawning = {
     *@returns {string} - id of the homeSource
     **/
     genericGetHome: function(creeps, role, bodyTimeCost) {
-        var creepList = _.filter(creeps, (c) => c.memory.role === role && c.ticksToLive > bodyTimeCost);
+        let creepList = _.filter(creeps, (c) => c.memory.role === role && c.ticksToLive > bodyTimeCost);
 
         let name;
         if(creepList.length > 0)
@@ -136,7 +149,7 @@ var updatedSpawning = {
             idList = [];
 
 
-        counter = {}; //{sourceID,counter}
+        let counter = {}; //{sourceID,counter}
         //intialize counter
         for(let i in idList){
             let id = idList[i];
@@ -150,7 +163,7 @@ var updatedSpawning = {
             counter[creepList[creep].memory.homeSource]++;
         }
         //console.log(JSON.stringify(counter));
-        var lowest = _.min(_.keys(counter), function(k) { return counter[k]; });
+        let lowest = _.min(_.keys(counter), function(k) { return counter[k]; });
         //console.log(lowest);
         let lowVal = counter[lowest];
         if(role === MY_ROLE_MOVER){
@@ -178,8 +191,8 @@ var updatedSpawning = {
     **/
     getCreepsHome: function(roleType,home) {
 
-        var dying = false;       //spawning a replacment creep or new creep?
-        var dyingName = '';     //name of the dying creep if any
+        let dying = false;       //spawning a replacment creep or new creep?
+        let dyingName = '';     //name of the dying creep if any
         let creepHome = "";
         let allCreepsWithHomes = [];
         //if creep memory is passed in then it is dying
@@ -211,7 +224,7 @@ var updatedSpawning = {
         }
 
         //count the number of creeps that have a given source as their home
-        for (var curr in allCreepsWithHomes){
+        for (let curr in allCreepsWithHomes){
             let currCreep = allCreepsWithHomes[curr];
             //if the current creep is dying do not count it towards the source counter
             if(dyingName != null && currCreep.name === dyingName){
@@ -222,9 +235,9 @@ var updatedSpawning = {
         }
 
 
-        var low = "";           //sourcePos of lowest populated source
-        var lowVal = 500;       //lowest count found
-        var balanced = false;
+        let low = "";           //sourcePos of lowest populated source
+        let lowVal = 500;       //lowest count found
+        let balanced = false;
 
         //find source with the lowest number of creeps attatched to it
         for (let sourcePos in counter)
@@ -248,12 +261,11 @@ var updatedSpawning = {
 //****************************************************************************
 /**
     @returns {String} - A creep role constant is returned
-*   @param {Object} numCreeps - Object containing the number of each creep type
-    @param {number} numCreeps.roleType - Current number of this role that are alive
+*   @param {CreepCount} numCreeps - Object containing the number of each creep type
 **/
    decideWhoToSpawn : function(numCreeps){
-       var creepType = null;
-       var numHarvesters,numUpgraders,numBuilders,numMovers,numClaimers,numDefenders,numHealers;
+       let creepType = null;
+       let numHarvesters,numUpgraders,numBuilders,numMovers,numClaimers,numDefenders,numHealers;
        numHarvesters = numCreeps[MY_ROLE_HARVESTER];
        numUpgraders = numCreeps[MY_ROLE_UPGRADER];
        numBuilders = numCreeps[MY_ROLE_BUILDER];
@@ -320,7 +332,7 @@ var updatedSpawning = {
     **/
    roleToBody : function(role, numCreeps, tier = null){
 
-       var bodyList = {};
+       let bodyList = {};
 
        switch (tier){
            case 1:{
@@ -342,11 +354,11 @@ var updatedSpawning = {
               break;
           }
        }
+       let bodyType = bodyList[role]
        if(numCreeps[MY_ROLE_HARVESTER] <= 1 || numCreeps[MY_ROLE_MOVER] <= 1){
            bodyType = [WORK,CARRY,MOVE];
        }
-       else
-            bodyType= bodyList[role];
+
 
        return bodyType;
    }

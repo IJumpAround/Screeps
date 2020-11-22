@@ -10,9 +10,14 @@ let memorySetup = {
 
                 if (room.controller.owner.username === "Nickka") {
                     let name = room.name;
-                    if (!Memory.mySources.hasOwnProperty(name)) {
-                        Memory.mySources[name] = {};
+
+                    if(!Memory.rooms[room].hasOwnProperty('mySources')) {
+                        Memory.rooms[room].mySources = {}
                     }
+
+                    // if (!Memory.mySources.hasOwnProperty(name)) {
+                    //     Memory.mySources[name] = {};
+                    // }
 
                     if (!Memory.spawnRooms[name]) {
                         Memory.spawnRooms[name] = 1;
@@ -20,7 +25,8 @@ let memorySetup = {
 
                     let sources = room.find(FIND_SOURCES);
                     let ids = sources.map(a => a.id)
-                    if (ids.toString() !== Object.keys(Memory.mySources[name]).toString()) {
+
+                    if (ids.toString() !== Object.keys(Memory.rooms[name].mySources).toString()) {
                         console.log("Adding new sources into memory")
                         for (let s = 0; s < sources.length; s++) {
                             let source = sources[s];

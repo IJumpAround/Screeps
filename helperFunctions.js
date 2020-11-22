@@ -38,7 +38,6 @@ var helperFunctions = {
     *@returns {RoomPosition} - position object of the source
     **/
     getSourcePosition: function(id){
-        console.log(`get source pos id: ${id}`)
         if(!id) {
             return false;
         }

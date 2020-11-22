@@ -13,7 +13,7 @@ let planner = {
 
             let id = find_results[index].id
             let source = Game.getObjectById(id)
-            if (!this.source_paths.hasOwnProperty(id)) {
+            if (!this.is_source_path_stored(source)) {
                 let path = this.lay_road_plans(room_obj, source)
                 this.store_source_path(room_name, id, path)
 
@@ -76,6 +76,26 @@ let planner = {
                 let path = serialized_paths[source_id]
                 this.source_paths[source_id] = Room.deserializePath(path)
             }
+        }
+    },
+
+    load_source_paths_from_room(room) {
+        return this.load_source_paths(Memory.rooms[room].controller_source_paths)
+    },
+
+    /**
+     *
+     * @param {Source} source
+     * @returns {boolean}
+     */
+    is_source_path_stored(source) {
+
+        if (this.source_paths[source.id] !== undefined) {
+            return true;
+        } else {
+            this.load_source_paths_from_room(source.room.name);
+
+            return (this.source_paths[source.id] !== null)
         }
     }
 }

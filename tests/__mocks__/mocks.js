@@ -17,3 +17,9 @@ global.BODYPART_COST = {
     "tough": 10,
     "claim": 600
 }
+
+
+// MockCreep = {
+//   name: String,
+//   memory: Memory
+// }

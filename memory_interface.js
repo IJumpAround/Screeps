@@ -34,7 +34,7 @@ let memory_interface = {
      * @param id
      * @returns {SerializedRoomPosition| null}
      */
-    lookup_source(room_name, id) {
+    get_source(room_name, id) {
         if (room_name === null) {
             return this._lookup_source_by_id(id)
         }
@@ -50,7 +50,7 @@ let memory_interface = {
         let result = {}
         for (let room in Memory.rooms) {
             if (Memory.rooms.hasOwnProperty(room)) {
-                let result = this.lookup_source(room, id)
+                let result = this.get_source(room, id)
                 if (result !== null) {
                     break
                 }
@@ -60,16 +60,43 @@ let memory_interface = {
     },
 
     is_source_stored(room_name, id) {
-        return this.lookup_source(room_name, id) !== undefined
+        return this.get_source(room_name, id) !== undefined
     },
 
     list_sources(room) {
         let mem_room = Memory.rooms[room]
         let result = []
         if(mem_room) {
+
             result = Object.keys(mem_room.mySources)
         }
         return result
+    },
+
+    /**
+     *
+     * @param {Creep} creep
+     */
+    get_creep_home_source(creep) {
+        let source = null;
+        try {
+            source = creep.memory.homeSource
+
+        } catch (ex) {
+            console.log(`Exception retrieving home source for ${creep.name}`);
+            console.log(ex.stack);
+        }
+        return source
+    },
+
+    /**
+     * Set the creeps home source in memory to the passed value
+     * @param {Creep} creep
+     * @param source
+     */
+    set_creep_home_source(creep, source) {
+
+        creep.memory.homeSource = source;
     }
 }
 

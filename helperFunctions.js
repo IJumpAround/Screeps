@@ -46,7 +46,7 @@ var helperFunctions = {
             if(source)
                 return source.pos;
             else {
-                let source_pos = memory_interface.lookup_source(id)
+                let source_pos = memory_interface.get_source(id)
                 return getPos(source_pos)
             }
         }

@@ -64,7 +64,6 @@ module.exports.loop = function ()
 
     // Iterate over rooms and run logic for each room
     let rooms = Object.keys(Memory.spawnRooms);
-    console.log(`looping over rooms ${rooms}`)
     for(let i = 0; i < rooms.length; i++){
         let room = rooms[i];
         spawnRoom.run(room);

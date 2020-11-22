@@ -3,22 +3,16 @@ let updatedSpawning = {
    *  @param {Creep[]} creepsSpawnedHere
    @param {CreepCount} numCreeps - number of creeps per role from the given room - numCreeps[creepRole] = #
    @param {StructureSpawn} spawner - the spawner
-   @param {number} [tier] -  tier of the creep body to spawn
    **/
-  run: function(creepsSpawnedHere, numCreeps, spawner, tier) {
+  run: function(creepsSpawnedHere, numCreeps, spawner) {
     let capacity = spawner.room.energyCapacityAvailable;
-    // TODO do away with tier system pick parts and set capacity dynamically
-    if (capacity < 600) {
-      tier = 1;
-    } else {
-      tier = 2;
-    }
-
-
-    let body;
     let creepRole = this.decideWhoToSpawn(numCreeps);
+
     if (creepRole != null) {
-      body = this.roleToBody(creepRole, numCreeps, tier);
+      let body = this.roleToBody(creepRole, capacity);
+      if(body == null) {
+        console.log(`Not spawning creep, please adjust when ${creepRole} can spawn`);
+      }
 
       let dry_run = spawner.spawnCreep(body, "Dry run", { dryRun: true });
       console.log(`dry run spawn result: ${dry_run}`);
@@ -140,24 +134,20 @@ let updatedSpawning = {
       room_name = spawn_room;
     }
 
-    let idList = memory_interface.list_sources(room_name);
 
-    // idList = Object.keys(Memory.mySources[room_name]);    //id list
-    // else
-    //     idList = [];
-
-
-    let counter = {}; //{sourceID,counter}
     //intialize counter
-    for (let i in idList) {
-      let id = idList[i];
-      counter[id] = 0;
-    }
-    //count sources occupied
-    for (let i = 0; i < creepList.length; i++) {
+    let idList = memory_interface.list_sources(room_name);
+    let counter = {}; //{sourceID:counter}
+    idList.forEach((source_id) => {
+      counter[source_id] = 0
+    })
 
-//NOTE the memory.homeSource structure does not support this
-      //should be changed to an ID that can lookup the position in memory
+    //count sources occupied
+    creepList.forEach((creep) => {
+      let homesource = memory_interface.get_homeSource
+      counter[creep]
+    })
+    for (let i = 0; i < creepList.length; i++) {
       counter[creepList[i].memory.homeSource]++;
     }
     //console.log(JSON.stringify(counter));
@@ -174,82 +164,6 @@ let updatedSpawning = {
 
     //throw SQLException();
     return lowest;
-  },
-
-//*************************************************************************************************
-  /**
-   Decides which source a creep should call its home based on the
-   other creeps of the specified type that already exist.
-   Attempts to balance the distribution of creeps among sources.
-   if a creep dying in the next 50 ticks that creep is passed through the
-   home parameter.
-
-   @return {string} - ID of the source the creep should call home
-   @param {String} roleType -The type of role of the creep being spawned
-   @param {Object} home     -Key/Val object where the key is the creepRole and val is [creepname,creepSource]
-   Any creeps passed by this param are dying within the next 50 ticks
-   **/
-  getCreepsHome: function(roleType, home) {
-
-    let dying = false;       //spawning a replacment creep or new creep?
-    let dyingName = "";     //name of the dying creep if any
-    let creepHome = "";
-    let allCreepsWithHomes = [];
-    //if creep memory is passed in then it is dying
-    if (home[roleType] !== undefined) {
-      dying = true;
-      dyingName = home[roleType][0];
-    } else
-      dyingName = null;
-
-
-    //Get an array of all the creeps of type roleType
-    for (let index in Game.creeps) {
-      //populate list of creeps of the given type
-      if (Game.creeps[index].memory.role == roleType) {
-        allCreepsWithHomes.push(Game.creeps[index]);
-      }
-    }
-
-    //initialize array with length equal to number of sources containing all zeroes
-    //will contain list of sources with number of creeps that have that source as their home
-    //Source1: 1 Source2 : 2 Source 3: 1.. etc
-    let counter = {};
-    //NOTE uses .pos object of the source as the index
-    for (let i in MY_SOURCES) {
-      counter[JSON.stringify(Memory.mySources[MY_SOURCES.E84N97[i]])] = 0;
-    }
-
-    //count the number of creeps that have a given source as their home
-    for (let curr in allCreepsWithHomes) {
-      let currCreep = allCreepsWithHomes[curr];
-      //if the current creep is dying do not count it towards the source counter
-      if (dyingName != null && currCreep.name === dyingName) {
-        //skip this creep
-      } else
-        counter[currCreep.memory.homeSource]++;
-    }
-
-
-    let low = "";           //sourcePos of lowest populated source
-    let lowVal = 500;       //lowest count found
-    let balanced = false;
-
-    //find source with the lowest number of creeps attatched to it
-    for (let sourcePos in counter) {
-      if (counter[sourcePos] <= lowVal) {
-        lowVal = counter[sourcePos];
-        low = sourcePos;
-      }
-    }
-    if (roleType === MY_ROLE_HARVESTER || lowVal === 0)
-      creepHome = JSON.parse(low);
-    else if (roleType === MY_ROLE_MOVER) {
-      if (lowVal > MY_MOVERS_PER_SOURCE) {
-        creepHome = false;
-      }
-    }
-    return creepHome;
   },
 
 
@@ -314,56 +228,57 @@ let updatedSpawning = {
     return creepType;
   },
 
-//****************************************************************************
-  /**
-   turns the creep role constant into an array of body parts
-   @return {string} Body type to pass to the spawner
-   @param {string} role - String constant for the creep role
-   @param numCreeps
-   @param {number} [tier=null] - body type tier to use
-   **/
-  roleToBody: function(role, numCreeps, tier = null) {
-
-    let bodyList = {};
-
-    switch (tier) {
-      case 1: {
-        return [WORK, CARRY, MOVE];
-        break;
-      }
-      case 2: {
-        bodyList = MY_TIER2_BODY_TYPES;
-        break;
-      }
-      case 3: {
-        bodyList = MY_TIER3_BODYTYPES;
-        break;
-      }
-      case 4: {
-        bodyList = MY_TIER4_BODY_TYPES;
-        break;
-      }
-      default : {
-        bodyList = MY_TIER5_BODY_TYPES;
-        break;
-      }
-    }
-    let bodyType = bodyList[role];
-    if (numCreeps[MY_ROLE_HARVESTER] <= 1 || numCreeps[MY_ROLE_MOVER] <= 1) {
-      bodyType = [WORK, CARRY, MOVE];
-    }
-
-
-    return bodyType;
-  },
+// //****************************************************************************
+//   /**
+//    turns the creep role constant into an array of body parts
+//    @return {string} Body type to pass to the spawner
+//    @param {string} role - String constant for the creep role
+//    @param numCreeps
+//    @param {number} [tier=null] - body type tier to use
+//    **/
+//   roleToBody: function(role, numCreeps, tier = null) {
+//
+//     let bodyList = {};
+//
+//     switch (tier) {
+//       case 1: {
+//         return [WORK, CARRY, MOVE];
+//         break;
+//       }
+//       case 2: {
+//         bodyList = MY_TIER2_BODY_TYPES;
+//         break;
+//       }
+//       case 3: {
+//         bodyList = MY_TIER3_BODYTYPES;
+//         break;
+//       }
+//       case 4: {
+//         bodyList = MY_TIER4_BODY_TYPES;
+//         break;
+//       }
+//       default : {
+//         bodyList = MY_TIER5_BODY_TYPES;
+//         break;
+//       }
+//     }
+//     let bodyType = bodyList[role];
+//     if (numCreeps[MY_ROLE_HARVESTER] <= 1 || numCreeps[MY_ROLE_MOVER] <= 1) {
+//       bodyType = [WORK, CARRY, MOVE];
+//     }
+//
+//
+//     return bodyType;
+//   },
 
   /**
    * Convert a role to a set of body parts for spawning
+   * If the energy capacity is too low to spawn a basic version of the target role, then null will be returned.
    * @param {String} role
    * @param {number} energy_capacity
-   * @param subclass
+   * @returns BodyPartConstant[] | null
    */
-  roleToBodyV2: function(role, energy_capacity, subclass = null) {
+  roleToBody: function(role, energy_capacity) {
     let weights = MY_ROLE_BODY_PART_RATIOS[role];
     let final_parts = [];
 
@@ -375,7 +290,7 @@ let updatedSpawning = {
     });
 
     if (remaining_energy < 0) {
-      console.error("ERROR Creep is too expensive to create!");
+      console.log("ERROR Creep is too expensive to create!");
       return null;
     }
 
@@ -398,10 +313,7 @@ let updatedSpawning = {
     });
 
     return final_parts;
-
-
   }
-
 };
 
 module.exports = updatedSpawning;

@@ -16,7 +16,6 @@ var helperFunctions = {
             y = object.y;
             roomName = object.roomName || object.room;
         }
-       // console.log("x= " + x + "y= " + y + "roomname= " + roomName)
         return new RoomPosition(x, y, roomName);
     },
 

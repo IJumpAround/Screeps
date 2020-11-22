@@ -144,17 +144,14 @@ let updatedSpawning = {
 
     //count sources occupied
     creepList.forEach((creep) => {
-      let homesource = memory_interface.get_homeSource
-      counter[creep]
+      let homesource = memory_interface.get_creep_home_source(creep)
+      counter[homesource]++
     })
-    for (let i = 0; i < creepList.length; i++) {
-      counter[creepList[i].memory.homeSource]++;
-    }
-    //console.log(JSON.stringify(counter));
+
     let lowest = _.min(_.keys(counter), function(k) {
       return counter[k];
     });
-    //console.log(lowest);
+
     let lowVal = counter[lowest];
     if (role === MY_ROLE_MOVER) {
       if (lowVal > MY_MOVERS_PER_SOURCE) {
@@ -162,7 +159,6 @@ let updatedSpawning = {
       }
     }
 
-    //throw SQLException();
     return lowest;
   },
 

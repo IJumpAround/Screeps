@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 
 here = Path(__file__).cwd()
 target = Path(r'C:\Users\Jump_Around\AppData\Local\Screeps\scripts\screeps.com\default')
@@ -12,5 +13,5 @@ print(source_files)
 
 
 for file in source_files:
-    replace = target / file.name
-    file.replace(replace)
+    dest = target / file.name
+    shutil.copyfile(file, dest)

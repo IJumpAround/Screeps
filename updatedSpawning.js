@@ -1,5 +1,3 @@
-import "index.d.ts";
-
 let updatedSpawning = {
     /**
      *  @param {Creep[]} creepsSpawnedHere

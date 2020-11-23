@@ -89,7 +89,6 @@ let roleBuilder =
         //creep already has a target
         else{
             let target = creep.getTarget();
-            creep.say(`🎯: ${target}`)
             console.log(JSON.stringify(target));
             result = creep.build(target);
             if(result === ERR_NOT_IN_RANGE){
@@ -247,17 +246,18 @@ let roleBuilder =
         }
         //Creep already has a target
         else {
-            creep.say("I have target")
-            target = creep.getTarget();
-            if(target instanceof Resource) {
-                result = creep.pickup(target);
+            creep.say("=> 🎯")
+            let target_res = creep.getTarget();
+            console.log(`target result: ${target_res}`);
+            if(target_res instanceof Resource) {
+                result = creep.pickup(target_res);
                 if(result === ERR_NOT_IN_RANGE)
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.moveTo(target_res, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else{
                 result = creep.withdraw(target,RESOURCE_ENERGY);
                 if(result === ERR_NOT_IN_RANGE)
-                    creep.moveTo(target,{visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.moveTo(target_res,{visualizePathStyle: {stroke: '#ffaa00'}});
             }
 
         }

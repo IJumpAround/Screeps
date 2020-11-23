@@ -34,9 +34,10 @@ and a lot of wasted time is spent traversing bad terrain when a better path coul
  
 
 ## Shorter Term Goals
--  
-- Fix whatever is wrong with builders wandering off into the middle of nowhere when trying to retrieve resources
- I think this may be because there are no chests/storage?  
+- Check for other places where that targeting bug happened, it might be affecting other roles.  
+- Look at terrain around source to reserve spaces for the harvesters  
+- Pick safe space for chests  
+- Auto build chests  
  - Something is wrong in the `has target` route for builders
 - balance all functions so we can have another spawn room  
     - This would be implemented alongside the task based model
@@ -94,8 +95,10 @@ and a lot of wasted time is spent traversing bad terrain when a better path coul
          they can pickup resources and take from storage only  
            
  **X**: Memory targeting implemented, creep now has a memory.target = {id,pos}  
-         getPos and setPos implemented as prototypes in the creep object
+         getPos and setPos implemented as prototypes in the creep object.  
  **X**: Pulled exit data so we can create walls and ramparts along the room entrance  
- **X**  Create more automated build process. 
+ **X**  Create more automated build process.  
+ **X**: Fix builders wandering off when retrieving resources.
+ 
            
 

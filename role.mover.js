@@ -43,7 +43,9 @@ let roleMover = {
             home = home.lookFor(LOOK_SOURCES)[0];
             }
             catch(err){
-                creep.moveTo(home, {ignoreCreeps: true});
+                console.log(err);
+                console.log(err.stack);
+                creep.moveTo(home, {visualizePathStyle: {stroke: '#7c0000'}});
                 return;
             }
             pickups = home.pos.findInRange(FIND_DROPPED_RESOURCES,droppedRange);
@@ -80,7 +82,6 @@ let roleMover = {
         let locations;
         let target; //creep.pos.findClosestByRange(locations);
         let result; //err code returned by withdraw or pickup
-
         //Find a target
         if(!creep.isValidTarget(MY_ACTION_RETRIEVE)){
             //Get list of locations then the closest one
@@ -98,25 +99,29 @@ let roleMover = {
             target = creep.getTarget();
         }
 
-
+        // console.log(`${creep.name} target: ${JSON.stringify(target)}`);
 
         //Is a dropped resource
         if(target && target.amount){
             result = creep.pickup(target);
-            if(result === ERR_NOT_IN_RANGE)
-                creep.moveTo(target,{reusePath: 5, visualizePathStyle: {stroke: '#55ffff'},ignoreCreeps: true});
+            if(result === ERR_NOT_IN_RANGE) {
+                let move_res = creep.moveTo(target, {
+                    visualizePathStyle: { stroke: '#ff558b', opacity: .6 }
+                });
+            }
+
         }
         //Only take from target that has stored energy above a threshold
         else if(target && target.store[RESOURCE_ENERGY] > target.storeCapacity*MY_MIN_STORAGE_RATIO){
             result = creep.withdraw(target,RESOURCE_ENERGY);
             if(result === ERR_NOT_IN_RANGE)
-                creep.moveTo(target, {reusePath: 5, visualizePathStyle: {stroke: '#55ffff'},ignoreCreeps: true});
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#55ffff'}});
         }
         else{
             creep.say("waiting...");
             let pos = getSourcePos(creep.memory.homeSource);
             if(!creep.pos.isNearTo(pos))
-                creep.moveTo(pos, {ignoreCreeps: true, reusePath: true});
+                creep.moveTo(pos, {visualizePathStyle: {stroke: '#5fffff'}});
         }
         //console.log (result);
 
@@ -181,7 +186,7 @@ let roleMover = {
         if(destinations.length > 0){
             destination = creep.pos.findClosestByRange(destinations);
             if(destination == null){
-                creep.moveTo(destinations[0], opts= {ignoreCreeps: true});
+                creep.moveTo(destinations[0], {visualizePathStyle: {stroke: '#ffff00'}});
                 return;
             }
             else
@@ -190,10 +195,11 @@ let roleMover = {
 
         //Destination is now considered valid
         //Attempt to transfer energy
-        if(creep.transfer(destination,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE)
+        let result = creep.transfer(destination,RESOURCE_ENERGY)
+        if(result === ERR_NOT_IN_RANGE)
         {
             //creep.say("moving energy");
-            creep.moveTo(target=destination,opts={visualizePathStyle: {stroke: '#ffff00'}, ignoreCreeps: true});
+            creep.moveTo(destination, {visualizePathStyle: {stroke: '#ffff00'}});
         }
 
 

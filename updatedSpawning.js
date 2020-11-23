@@ -16,7 +16,6 @@ let updatedSpawning = {
       }
 
       let dry_run = spawner.spawnCreep(body, "Dry run", { dryRun: true });
-      console.log(`dry run spawn result: ${dry_run}`);
       if (dry_run === 0) {
         this.spawn(creepsSpawnedHere, creepRole, body, spawner);
       }

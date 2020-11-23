@@ -1,4 +1,4 @@
-var roleBuilder =
+let roleBuilder =
 {
     
     /** @param {Creep} creep **/
@@ -12,6 +12,7 @@ var roleBuilder =
             creep.memory.building = false;
             creep.say('🔄 harvest');
 	    }
+
         //creep has resources and can build or repair
 	    if(!creep.memory.building && creep.store.getUsedCapacity(RESOURCE_ENERGY) === creep.store.getCapacity(RESOURCE_ENERGY))
         {
@@ -22,7 +23,8 @@ var roleBuilder =
 
         //Begin build logic
 	    if(creep.memory.building){
-            var sitesLeft = this.build(creep);
+            let sitesLeft = this.build(creep);
+          console.log(`creep ${creep.name} sites left: ${sitesLeft}`);
             //There are no construction sites so start repairing
             if(!sitesLeft)
                 this.repair(creep);
@@ -40,9 +42,9 @@ var roleBuilder =
 **/
     build : function(creep){
 
-        var targets = [];
-        var closestTarget;
-        var result;
+        let targets = [];
+        let closestTarget;
+        let result;
         if(!creep.isValidTarget(MY_ACTION_BUILD)){
 
             //search for targets in any room listed in MY_SAFEROOMS
@@ -64,7 +66,7 @@ var roleBuilder =
                 //Set the creeps memory target
                 if(closestTarget == null){
                     creep.setTarget(targets[0]);
-                    creep.moveTo(targets[0]);
+                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
                 else
                     creep.setTarget(closestTarget);
@@ -83,7 +85,7 @@ var roleBuilder =
         }
         //creep already has a target
         else{
-            target = creep.getTarget();
+            let target = creep.getTarget();
             result = creep.build(target);
             if(result === ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -176,7 +178,7 @@ var roleBuilder =
     @param {Structure} [target] -optional target structure to repair
 **/
     repair : function(creep, target = null){
-        var result;
+        let result;
         //check if we need to get a target
         if(!creep.isValidTarget(MY_ACTION_REPAIR)){
             //get all targets
@@ -208,21 +210,21 @@ var roleBuilder =
     @param {Structure} [target=null] -optional target container or storage
 **/
     retrieve : function(creep, target = null){
-        var result;
+        let result;
         //Creep needs to choose a new target
         if(!creep.isValidTarget(MY_ACTION_RETRIEVE)){
-            var dropped = creep.pos.findInRange(FIND_DROPPED_RESOURCES,40);
+            let dropped = creep.pos.findInRange(FIND_DROPPED_RESOURCES,40);
             dropped = dropped[0];
             if(dropped){
                 creep.setTarget(dropped);
                 result = creep.pickup(dropped);
                 if(result === ERR_NOT_IN_RANGE)
-                    creep.moveTo(dropped);
+                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             //NOTE this stops after the first storage is found
             //Get the location of the storage structure
             else{
-                var storage;
+                let storage;
                 for (let i in MY_SAFEROOMS){
                     let room = Game.rooms[MY_SAFEROOMS[i]];
                     storage = room.storage;
@@ -244,7 +246,7 @@ var roleBuilder =
             if(target instanceof Resource) {
                 result = creep.pickup(target);
                 if(result === ERR_NOT_IN_RANGE)
-                    creep.moveTo(target);
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else{
                 result = creep.withdraw(target,RESOURCE_ENERGY);

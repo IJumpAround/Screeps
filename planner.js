@@ -32,10 +32,13 @@ let planner = {
         let path_pos = path.map((step) => new RoomPosition(step.x, step.y, room_obj.name))
         Game.rooms[room_obj.name].visual.poly(path_pos, {stroke: '#ffffff', strokeWidth: .8, opacity: .4, lineStyle: 'solid'})
 
+        let source_pos = source.pos
         for (let i in path) {
             let step = path[i]
-            let res = room_obj.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
-            console.log("Creating road construction site ", res )
+            if (step.x !== source_pos.x && step.y !== source_pos.y) {
+                let res = room_obj.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
+                console.log("Creating road construction site ", res)
+            }
         }
 
         return path

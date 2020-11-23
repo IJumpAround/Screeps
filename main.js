@@ -68,6 +68,7 @@ module.exports.loop = function ()
         let room = rooms[i];
         spawnRoom.run(room, tick);
 
+        planner.test_draw_lines(Game.rooms[room])
         // Create road plans
         if (tick % 100 === 0) {
             planner.source_roads(room)

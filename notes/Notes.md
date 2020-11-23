@@ -34,14 +34,9 @@ and a lot of wasted time is spent traversing bad terrain when a better path coul
  
 
 ## Shorter Term Goals
-- Create more automated build process.  
-   `Should be based on the current max energy storage from extensions and the spawner`  
-   `Currently tiers are set manually`  
-   ```
-  Ideally we would pick parts that are effective for a particular job, and combine them  
-  in a way such that their total cost is near our max storage
-  ```
-  
+-  
+- Fix whatever is wrong with builders wandering off into the middle of nowhere when trying to retrieve resources
+ I think this may be because there are no chests/storage?
 - balance all functions so we can have another spawn room  
     - This would be implemented alongside the task based model
     
@@ -61,43 +56,45 @@ and a lot of wasted time is spent traversing bad terrain when a better path coul
 
 
 
- **✔**: Upgraders and builders no longer harvest
+ **X**: Upgraders and builders no longer harvest
   
- **✔**: Movers now spawn balanced across sources
+ **X**: Movers now spawn balanced across sources
   
- **✔**: Write function to calculate cost of a body type
+ **X**: Write function to calculate cost of a body type
   
- **✔**: Harvesters spawn balanced among sources
+ **X**: Harvesters spawn balanced among sources
   
- **✔**: Harvesters place energy into containers next to them
+ **X**: Harvesters place energy into containers next to them
   
- **✔**: Movers empty buffer chest next to harvesters NOTE this is hardcoded
+ **X**: Movers empty buffer chest next to harvesters NOTE this is hardcoded
   
- **✔**: Layout of spawn logic has been reworked
+ **X**: Layout of spawn logic has been reworked
   
- **✔**: Layout of builder logic
+ **X**: Layout of builder logic
    
 
- **✔**: Basic tower logic implemented 
+ **X**: Basic tower logic implemented 
  
- **✔**: Spawning based on TTL implemented, and is now balanced when spawning  
+ **X**: Spawning based on TTL implemented, and is now balanced when spawning  
          before the creep is dead  
           
- **✔**: Creeps can mine from the adjacent room
+ **X**: Creeps can mine from the adjacent room
   
- **✔**: Removed containers except for buffer containers
+ **X**: Removed containers except for buffer containers
   
- **✔**: Movers' and Harvesters' home source is now a position object.
+ **X**: Movers' and Harvesters' home source is now a position object.
              Spawning functions places the home source in the creep memory initially  
                
- **✔**: Repair prioritizes lower hp structures first NOTE: this can still be extended  
+ **X**: Repair prioritizes lower hp structures first NOTE: this can still be extended  
   
- **✔**: Basic war code is setup, defender is always spawned and a healer will spawn when enemies are detected  
+ **X**: Basic war code is setup, defender is always spawned and a healer will spawn when enemies are detected  
 
- **✔**: Movers are now set to one per source, the remaining movers reside within a room    
+ **X**: Movers are now set to one per source, the remaining movers reside within a room    
          they can pickup resources and take from storage only  
            
- **✔**: Memory targeting implemented, creep now has a memory.target = {id,pos}  
+ **X**: Memory targeting implemented, creep now has a memory.target = {id,pos}  
          getPos and setPos implemented as prototypes in the creep object
+ **X**: Pulled exit data so we can create walls and ramparts along the room entrance  
+ **X**  Create more automated build process. 
            
 

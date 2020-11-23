@@ -36,7 +36,8 @@ and a lot of wasted time is spent traversing bad terrain when a better path coul
 ## Shorter Term Goals
 -  
 - Fix whatever is wrong with builders wandering off into the middle of nowhere when trying to retrieve resources
- I think this may be because there are no chests/storage?
+ I think this may be because there are no chests/storage?  
+ - Something is wrong in the `has target` route for builders
 - balance all functions so we can have another spawn room  
     - This would be implemented alongside the task based model
     

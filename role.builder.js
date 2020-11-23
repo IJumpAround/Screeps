@@ -219,7 +219,7 @@ let roleBuilder =
         //Creep needs to choose a new target
         if(!creep.isValidTarget(MY_ACTION_RETRIEVE)){
             let dropped = creep.pos.findInRange(FIND_DROPPED_RESOURCES,40);
-            dropped = dropped[0];
+            dropped = dropped[0];;
             if(dropped){
                 creep.setTarget(dropped);
                 result = creep.pickup(dropped);
@@ -247,6 +247,7 @@ let roleBuilder =
         }
         //Creep already has a target
         else {
+            creep.say("I have target")
             target = creep.getTarget();
             if(target instanceof Resource) {
                 result = creep.pickup(target);

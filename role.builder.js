@@ -10,7 +10,7 @@ let roleBuilder =
         {
             creep.memory.target = null;     //reset target
             creep.memory.building = false;
-            creep.say('🔄 harvest');
+            creep.say('🔄 Pickup');
 	    }
 
         //creep has resources and can build or repair
@@ -45,7 +45,10 @@ let roleBuilder =
         let targets = [];
         let closestTarget;
         let result;
-        if(!creep.isValidTarget(MY_ACTION_BUILD)){
+
+        let valid_target = creep.isValidTarget(MY_ACTION_BUILD)
+    console.log(`${creep.name} valid target: ${valid_target}`);
+        if(!valid_target){
 
             //search for targets in any room listed in MY_SAFEROOMS
 
@@ -86,6 +89,8 @@ let roleBuilder =
         //creep already has a target
         else{
             let target = creep.getTarget();
+            creep.say(`🎯: ${target}`)
+            console.log(JSON.stringify(target));
             result = creep.build(target);
             if(result === ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});

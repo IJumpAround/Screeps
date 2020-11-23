@@ -25,12 +25,12 @@ var roleHarvester =
         let container = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: {structureType: STRUCTURE_CONTAINER}});
         //console.log(creep.name + ' ' +container);
 
-        if (container.length == 0) {
+        if (container.length === 0) {
             creep.drop(RESOURCE_ENERGY);
         } else {
             let result = creep.transfer(container[0], RESOURCE_ENERGY);
             //console.log(result);
-            if (result == ERR_FULL) {
+            if (result === ERR_FULL) {
                 creep.drop(RESOURCE_ENERGY);
             } else {/*
                 console.log("ERROR");
@@ -63,6 +63,8 @@ var roleHarvester =
         try {
             homeSource = sourcePos.lookFor(LOOK_SOURCES)[0];
         } catch (err) {
+            console.log(err);
+            console.log(err.stack);
             creep.moveTo(sourcePos);
             return;
         }
@@ -70,10 +72,11 @@ var roleHarvester =
         var result = creep.harvest(homeSource);
         //console.log(result);
         if (result === ERR_NOT_IN_RANGE) {
+            creep.say("Moving to source")
             creep.moveTo(homeSource, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if (result == null) {
             console.log("No free sources found");
-            return;
+
         }
 
     }

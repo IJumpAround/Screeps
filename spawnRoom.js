@@ -19,14 +19,14 @@ let spawnRoom = {
         'defender' : 0,
         'healer' : 0
     },
-
+    creepsSpawnedHere: [],
     loaded_sources: {},
     room: {},
 
     /**
     *@param {string} roomName - roomname
     **/
-    run : function(roomName){
+    run : function(roomName, tick){
 
         let hostiles = defense.run(roomName);
         let towerActions = require('towerActions');
@@ -35,33 +35,27 @@ let spawnRoom = {
 
         //Get list of all creeps spawned by the spawner in this room and count them
         this.room = Game.rooms[roomName];
-        let creepsSpawnedHere = _.filter(Game.creeps, (i) => i.memory.spawnerRoom === roomName);
-        this.numCreeps.harvester = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HARVESTER);
-        this.numCreeps.mover = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_MOVER);
-        this.numCreeps.upgrader = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_UPGRADER);
-        this.numCreeps.builder = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_BUILDER);
-        this.numCreeps.claimer = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_CLAIMER);
-        this.numCreeps.defender = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_DEFENDER);
-        this.numCreeps.healer = _.sum(creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HEALER);
+        if(this.creepsSpawnedHere.length === 0 || tick % 10 === 0) {
+            this.creepsSpawnedHere = _.filter(Game.creeps, (i) => i.memory.spawnerRoom === roomName);
+            this.numCreeps.harvester = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HARVESTER);
+            this.numCreeps.mover = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_MOVER);
+            this.numCreeps.upgrader = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_UPGRADER);
+            this.numCreeps.builder = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_BUILDER);
+            this.numCreeps.claimer = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_CLAIMER);
+            this.numCreeps.defender = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_DEFENDER);
+            this.numCreeps.healer = _.sum(this.creepsSpawnedHere, (c) => c.memory.role === MY_ROLE_HEALER);
+        }
 
         //Get spawner and tower in this room
         let spawner = this.room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_SPAWN}});
-        spawner = spawner[0];
         let tower = this.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+        spawner = spawner[0];
 
         let hostilesInRoom = _.filter(this.room.find(FIND_HOSTILE_CREEPS));
 
-        if (this.loaded_sources.length === 0) {
-            this.loaded_sources = Memory.rooms['room'].mySources['source123']
-        }
         //Defense code
-
-
-        //console.log(hostiles);
-
         if (hostilesInRoom.length > 0)
         {
-
             if(!Memory.warTime){
                 console.log("Hostile creep detected");
                 Memory.warTime = true;
@@ -81,10 +75,9 @@ let spawnRoom = {
         }
 
         //EXECUTE CREEP ROLES
-        for(let name in creepsSpawnedHere){
-        	let creep = creepsSpawnedHere[name];
+        for(let name in this.creepsSpawnedHere){
+        	let creep = this.creepsSpawnedHere[name];
             let spawnTime = require('utilities').calculateTimeCost(creep.body);
-            // console.log(spawnTime + ' ' + creep.ticksToLive);
             switch (creep.memory.role){
 
         	    case MY_ROLE_HARVESTER:{
@@ -155,7 +148,7 @@ let spawnRoom = {
         //towerActions.repair(tower);
         roomUI.drawHud(this.numCreeps,roomName);
 
-        spawning.run(creepsSpawnedHere, this.numCreeps, spawner);
+        spawning.run(this.creepsSpawnedHere, this.numCreeps, spawner);
     }
 
 };

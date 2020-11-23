@@ -66,7 +66,7 @@ module.exports.loop = function ()
     let rooms = Object.keys(Memory.spawnRooms);
     for(let i = 0; i < rooms.length; i++){
         let room = rooms[i];
-        spawnRoom.run(room);
+        spawnRoom.run(room, tick);
 
         // Create road plans
         if (tick % 100 === 0) {

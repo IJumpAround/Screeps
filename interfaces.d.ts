@@ -1,11 +1,9 @@
-
-
 interface Memory {
-    spawnRooms: {}
-    mySources: {}
-    warTime: boolean
-    creeps: CreepMemory[]
-    rooms: RoomMemory[]
+  spawnRooms: {}
+  mySources: {}
+  warTime: boolean
+  creeps: CreepMemory[]
+  rooms: RoomMemory[]
 }
 
 interface SerializedRoomPosition {
@@ -15,27 +13,28 @@ interface SerializedRoomPosition {
 }
 
 interface RoomMemory {
-    controller_source_paths: {}
-    mySources: {[name: string]: SerializedRoomPosition};
+  controller_source_paths: {}
+  mySources: { [name: string]: SerializedRoomPosition };
 }
-
 
 
 interface CreepMemory {
-    homeSource: string
-    upgrading: boolean
-    role: string
-    spawnerRoom: string
+  homeSource: string
+  upgrading: boolean
+  role: string
+  spawnerRoom: string
+  building: boolean
+  target: {[id: string]: SerializedRoomPosition}
 }
 
 interface CreepCount {
-        'harvester': number,
-        'mover': number,
-        'upgrader': number,
-        'builder': number,
-        'claimer' : number,
-        'defender' : number
+  "harvester": number,
+  "mover": number,
+  "upgrader": number,
+  "builder": number,
+  "claimer": number,
+  "defender": number
 
 }
 
-declare const SpawnOptions
+declare const SpawnOptions;

@@ -186,6 +186,10 @@ let updatedSpawning = {
         return MY_ROLE_DEFENDER;
     }
 
+    if(numHarvesters === 0) {
+      return MY_ROLE_HARVESTER
+    }
+
     //Check for harvesters and movers first
     if ((numHarvesters < MY_MAX_HARVESTERS || numMovers < MY_MAX_MOVERS) && !(numUpgraders === 0 || numBuilders === 0 && numMovers > 0 && numHarvesters > 0)) {
 

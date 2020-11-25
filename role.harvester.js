@@ -4,7 +4,7 @@ var roleHarvester =
         /** @param {Creep} creep **/
         run: function (creep) {
             //Run my harvest function
-            if (creep.store.energy < creep.store.getCapacity() * 0.89) {
+            if (creep.store.energy < creep.store.getCapacity(RESOURCE_ENERGY) * 0.89) {
                 this.harvest(creep);
             }
 
@@ -24,7 +24,6 @@ var roleHarvester =
         //Prioritize the container placed next to the harvester
         let container = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: {structureType: STRUCTURE_CONTAINER}});
         //console.log(creep.name + ' ' +container);
-
         if (container.length === 0) {
             creep.drop(RESOURCE_ENERGY);
         } else {
@@ -69,14 +68,13 @@ var roleHarvester =
             return;
         }
         //Harvest from source
-        var result = creep.harvest(homeSource);
-        //console.log(result);
-        if (result === ERR_NOT_IN_RANGE) {
-            creep.say("Moving to source")
-            creep.moveTo(homeSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if (result == null) {
-            console.log("No free sources found");
 
+        //console.log(result);
+        if (!creep.pos.isNearTo(homeSource)) {
+            creep.say("Moving to source")
+            creep.moveTo(homeSource.pos, { visualizePathStyle: { stroke: '#ffaa00' } });
+        } else {
+            let result = creep.harvest(homeSource);
         }
 
     }

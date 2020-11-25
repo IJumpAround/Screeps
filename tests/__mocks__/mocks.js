@@ -1,13 +1,13 @@
-global.CLAIM = "claim"
-global.MOVE = "move"
-global.WORK = "work"
-global.CARRY = "carry"
-global.TOUGH = "tough"
-global.HEAL = "heal"
-global.ATTACK = "attack"
+test_global.CLAIM = "claim"
+test_global.MOVE = "move"
+test_global.WORK = "work"
+test_global.CARRY = "carry"
+test_global.TOUGH = "tough"
+test_global.HEAL = "heal"
+test_global.ATTACK = "attack"
 
 
-global.BODYPART_COST = {
+test_global.BODYPART_COST = {
   "move": 50,
     "work": 100,
     "attack": 80,

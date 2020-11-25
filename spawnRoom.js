@@ -77,6 +77,7 @@ let spawnRoom = {
         //EXECUTE CREEP ROLES
         for(let name in this.creepsSpawnedHere){
         	let creep = this.creepsSpawnedHere[name];
+            // console.log(creep);
             let spawnTime = require('utilities').calculateTimeCost(creep.body);
             switch (creep.memory.role){
 
@@ -128,6 +129,7 @@ let spawnRoom = {
                     }
                     catch(err){
                         console.log(err);
+                        console.log(err.stack);
                     }
                     break;
                 }
@@ -138,6 +140,7 @@ let spawnRoom = {
                     }
                     catch(err){
                         console.log(err);
+                        console.log(err.stack);
                     }
                     break;
                 }

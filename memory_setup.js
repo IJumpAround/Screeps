@@ -55,8 +55,17 @@ let memorySetup = {
                 Memory.spawnRooms = {}
             }
 
+            // Remove old rooms after a new spawn
+            for (let room in Memory.spawnRooms) {
+                console.log(room);
+                if (!Game.rooms[room] || Game.rooms[room].owner.username  !== "Nickka") {
+                    delete Memory.spawnRooms[room]
+                }
+            }
+
         } catch (ex) {
             console.log(ex)
+            console.log(ex.stack);
         }
     }
 

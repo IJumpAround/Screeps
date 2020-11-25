@@ -22,7 +22,7 @@ let planner = {
      * @param {Room} room
      */
     test_draw_lines(room) {
-      console.log(JSON.stringify(room));
+      // console.log(JSON.stringify(room));
       let lines = this.initial_find_exits(room);
       this.draw_lines(lines, room);
     },
@@ -119,7 +119,7 @@ let planner = {
 
       let room_obj = Game.rooms[room_name];
       let find_results = room_obj.find(FIND_SOURCES);
-
+      console.log(`source ${JSON.stringify(find_results)}`);
       for (let index = 0; index < find_results.length; index++) {
 
         let id = find_results[index].id;
@@ -241,11 +241,13 @@ let planner = {
     is_source_path_stored(source) {
 
       if (this.source_paths[source.id] !== undefined) {
+        console.log('stored');
         return true;
       } else {
         this.load_source_paths_from_room(source.room.name);
-
-        return (this.source_paths[source.id] !== null);
+        console.log(JSON.stringify(this.source_paths));
+        console.log(this.source_paths[source.id] !== undefined);
+        return (this.source_paths[source.id] !== undefined);
       }
     }
   }

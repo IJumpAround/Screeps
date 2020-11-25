@@ -87,7 +87,7 @@ global.MY_ROLE_BODY_PART_RATIOS = {
     }
 }
 
-
+global.MY_UPGRADE_RANGE = 3
 //minimum amount allowed in storage
 global.MY_MIN_STORAGE_RATIO = 0.04;
 //Repair percents

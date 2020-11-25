@@ -1,22 +1,22 @@
 require('prototype.creep');
 require('constants');
-let roleHarvester = require('role.harvester');
-let roleUpgrader = require('role.upgrader');
-let roleBuilder = require('role.builder');
-let roleMover = require('role.mover');
-let roleClaimer = require('role.claimer');
-let roleDefender = require('role.defender');
-let roleHealer = require('role.healer');
-let roomUI = require('roomUI');
+// let roleHarvester = require('role.harvester');
+// let roleUpgrader = require('role.upgrader');
+// let roleBuilder = require('role.builder');
+// let roleMover = require('role.mover');
+// let roleClaimer = require('role.claimer');
+// let roleDefender = require('role.defender');
+// let roleHealer = require('role.healer');
+// let roomUI = require('roomUI');
 //let roomInit = require('roomInit');
 //let spawning = require('spawning');
-let towerActions = require('towerActions');
-let defense = require('defense');
+// let towerActions = require('towerActions');
+// let defense = require('defense');
 let spawnRoom = require('spawnRoom');
 
-let spawning = require('updatedSpawning');
-let helper_functions = require('helperFunctions');
-let utilities = require('utilities');
+// let spawning = require('updatedSpawning');
+// let helper_functions = require('helperFunctions');
+// let utilities = require('utilities');
 let memorySetup = require('memory_setup')
 
 
@@ -25,7 +25,7 @@ global.getPos = require('helperFunctions').getRoomPosition;
 global.getRoom = require('helperFunctions').getRoomObject;
 global.getSourcePos = require('helperFunctions').getSourcePosition;
 global.memory_interface = require('memory_interface')
-global._ = require('lodash')
+// global._ = require('lodash')
 
 memorySetup.init_memory()
 
@@ -64,6 +64,7 @@ module.exports.loop = function ()
 
     // Iterate over rooms and run logic for each room
     let rooms = Object.keys(Memory.spawnRooms);
+    // console.log(`MAIN LOOP ${rooms.length}`);
     for(let i = 0; i < rooms.length; i++){
         let room = rooms[i];
         spawnRoom.run(room, tick);
@@ -73,13 +74,6 @@ module.exports.loop = function ()
         if (tick % 100 === 0) {
             planner.source_roads(room)
         }
-        // spawnRoom.run(MY_SPAWN_ROOMS[room]);
-        // }
-        // catch(err)
-        // {
-        //     console.log(err + ' in room ' + room);
-        //     console.log(err.stack)
-        // }
 
     }
 };

@@ -28,7 +28,7 @@ var roomUI = {
             var x,y;
             x = container.pos.x;
             y = container.pos.y-1;
-            var percent = Math.floor(100*(container.store[RESOURCE_ENERGY]/container.storeCapacity));
+            var percent = Math.floor(100*(container.store[RESOURCE_ENERGY]/container.store.getCapacity()));
             var visual = container.room.visual;
             visual.text("%"+percent,x,y);
         }

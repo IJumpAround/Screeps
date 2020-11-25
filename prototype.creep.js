@@ -51,9 +51,10 @@ Creep.prototype.isValidTarget =
 *@returns {boolean}
 **/
     function(action){
-        var target = this.getTarget();
+        let target = this.getTarget();
 
         if(target){
+                console.log(target.energy);
             //Check if creep is dropping off resources or retrieving
             if(action === MY_ACTION_DROPOFF || action === MY_ACTION_RETRIEVE) {
                 //check if retrieving a resource
@@ -61,13 +62,13 @@ Creep.prototype.isValidTarget =
                     return true;
                 //check if object is container or storage
                 else if(target.structureType === STRUCTURE_CONTAINER || target.structureType === STRUCTURE_STORAGE){
-                    if(target.store[RESOURCE_ENERGY] < target.storeCapacity){
+                    if(target.store[RESOURCE_ENERGY] < target.store.getCapacity()){
                         return true;
                     }
                 }
                 //check if object is extension or spawn
                 else if(target.structureType === STRUCTURE_EXTENSION || target.structureType === STRUCTURE_SPAWN){
-                    if(target.energy < target.energyCapacity){
+                    if(target.store.energy < target.store.getCapacity()){
                         return true;
                     }
                 }

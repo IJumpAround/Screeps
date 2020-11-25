@@ -3,6 +3,7 @@ utils = require("./utilities");
 let roleBuilder =
     {
         build_sites: [],
+        _safe_rooms: [],
         /** @param {Creep} creep **/
         run: function(creep) {
             // console.log(`${creep.name} START OF RUN: building: ${creep.memory.building} usedCapacity: ${creep.store.getUsedCapacity(RESOURCE_ENERGY)}
@@ -22,9 +23,7 @@ let roleBuilder =
 
             //Begin build logic
             if (creep.memory.building) {
-                let sitesLeft = this.build(creep);
-                console.log(`creep ${creep.name} sites left: ${sitesLeft}`);
-                //There are no construction sites so start repairing
+                this.build(creep);
                 if (this.build_sites.length === 0)
                     this.repair(creep);
             }
@@ -35,16 +34,29 @@ let roleBuilder =
 
         },
 
+        get safe_rooms() {
+            let rooms = []
+            if (this._safe_rooms.length === 0)
+                rooms = Memory.spawnRooms
+            else
+                rooms = this._safe_rooms
+            return rooms
+
+        },
+
+        set safe_rooms(val) {
+            this._safe_rooms = val
+        },
+
         search_for_build_targets() {
             let targets = []
-            console.log(`saferooms ${MY_SAFEROOMS}`);
-            for (let i in MY_SAFEROOMS) {
-                let room = MY_SAFEROOMS[i];
-
-                if (Game.rooms[room]) {
-                    let temp = Game.rooms[room].find(FIND_CONSTRUCTION_SITES);
+            let rooms = memory_interface.safe_rooms
+            for (let room_name in rooms) {
+                if (Game.rooms[room_name]) {
+                    let temp = Game.rooms[room_name].find(FIND_CONSTRUCTION_SITES);
                     if (temp.length > 0) {
                         targets = targets.concat(temp);
+                        console.log(`targets? ${targets}`);
                         this.build_sites = targets
                     }
 
@@ -62,7 +74,7 @@ let roleBuilder =
             // let closestTarget = creep.pos.findClosestByRange(sites);
             let dist = 100
             let site;
-
+            console.log(`potential sites ${sites.length}`);
             for (let i = 0; i < sites.length; i++) {
                 let site_pos = sites[i].pos
                 let curr_dist = Math.ceil(Math.sqrt(Math.pow(site_pos.x, 2) + Math.pow(site_pos.y, 2)))
@@ -72,7 +84,6 @@ let roleBuilder =
                     site = sites[i]
                 }
             }
-
             return site
         },
 
@@ -84,6 +95,10 @@ let roleBuilder =
             creep.memory.target = null
             creep.memory.building = false
         },
+        end_retrieve_mode(creep) {
+            creep.memory.target = null
+            creep.memory.building = true;
+        }  ,
 
         /**
          * @param {Creep} creep
@@ -125,15 +140,14 @@ let roleBuilder =
             let closest_target;
             let targets = []
             //search for targets in any room listed in MY_SAFEROOMS
+
             if (this.build_sites.length === 0) {
-                targets = this.search_for_build_targets()
-            } else {
-                targets = this.build_sites
+                this.search_for_build_targets()
             }
 
+            targets = this.build_sites
             //attempt to find the closest target in the list
             if (targets.length > 0) {
-                closest_target = creep.pos.findClosestByRange(targets);
                 closest_target = this.find_closest_construction_site(creep, targets)
                 creep.setTarget(closest_target);
             }
@@ -159,7 +173,11 @@ let roleBuilder =
                 target = creep.getTarget();
             }
 
-            this.build_or_move_to_target(creep, target)
+            if (target) {
+                this.build_or_move_to_target(creep, target)
+            } else {
+                creep.say("Need target")
+            }
 
         },
 
@@ -285,6 +303,9 @@ let roleBuilder =
                     result = creep.pickup(dropped);
                     if (result === ERR_NOT_IN_RANGE)
                         creep.moveTo(dropped.pos, { reusePath: 0, visualizePathStyle: { stroke: "#e7218e" } });
+                    else if(result === OK) {
+                        this.end_retrieve_mode(creep)
+                    }
                 }
                     //NOTE this stops after the first storage is found
                 //Get the location of the storage structure
@@ -311,7 +332,7 @@ let roleBuilder =
                 console.log(`${creep.name} => 🎯 GET TARGET ${JSON.stringify(target_res)}\n instanceof Resource ${target_res instanceof Resource}`);
                 if (target_res instanceof Resource) {
 
-                    creep.say(`=> 🎯 ${result}`);
+                    // creep.say(`=> 🎯 ${result}`);
                     // result = ERR_NOT_IN_RANGE
                     if (!creep.pos.isNearTo(target_res.pos)) {
                         let test123 = creep.move_next_to_destination(target_res.pos)
@@ -320,8 +341,11 @@ let roleBuilder =
                         creep.room.visual.text(`🎯`, target_res.pos);
                     } else {
                         creep.say("Pickup");
-                        console.log(`${creep.name} waiting ${result}`);
+                        // console.log(`${creep.name} waiting ${result}`);
                         result = creep.pickup(target_res);
+                        if (result === OK) {
+                            this.end_retrieve_mode(creep)
+                        }
                     }
                 } else {
                     console.log(`${creep.name} withdraw`);

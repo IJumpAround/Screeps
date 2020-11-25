@@ -53,15 +53,19 @@ Creep.prototype.move_next_to_destination = function(target_pos) {
     target_pos.findClosestByRange();
     let src = this.pos
 
-    let adjacent_tiles = utilities.get_adjacent_empty_tiles(target_pos);
-    let path;
-    if (adjacent_tiles.length > 0) {
-        path = src.findPathTo(adjacent_tiles[0]);
-    } else {
-        path = src.findPathTo(target_pos, { ignoreCreeps: true });
+    let adjacent_path = memory_interface.get_adjacent_path(this)
+    if (!adjacent_path) {
+        let adjacent_tiles = utilities.get_adjacent_empty_tiles(target_pos);
+        let path;
+        if (adjacent_tiles.length > 0) {
+            path = src.findPathTo(adjacent_tiles[0]);
+        } else {
+            path = src.findPathTo(target_pos, { ignoreCreeps: true });
+        }
+        memory_interface.store_adjacent_path(this, path)
     }
-    this.room.visual.poly(path)
-    return this.moveByPath(path)
+    this.room.visual.poly(adjacent_path)
+    return this.moveByPath(adjacent_path)
     // return path;
 
 }
@@ -78,7 +82,6 @@ Creep.prototype.isValidTarget =
         let target = this.getTarget();
 
         if(target){
-                console.log(target.energy);
             //Check if creep is dropping off resources or retrieving
             if(action === MY_ACTION_DROPOFF || action === MY_ACTION_RETRIEVE) {
                 //check if retrieving a resource

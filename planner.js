@@ -246,7 +246,6 @@ let planner = {
       } else {
         this.load_source_paths_from_room(source.room.name);
         console.log(JSON.stringify(this.source_paths));
-        console.log(this.source_paths[source.id] !== undefined);
         return (this.source_paths[source.id] !== undefined);
       }
     }

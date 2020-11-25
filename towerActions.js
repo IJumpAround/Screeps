@@ -5,7 +5,6 @@ var towerActions = {
     *@param {Structure} [target] - the target to repair
     **/
     repair: function(thisTower, target = null) {
-        console.log(thisTower);
         if (thisTower.store) {
             if (target == null) {
                 if (thisTower.store.energy > thisTower.store.getCapacity(RESOURCE_ENERGY) * 0.5) {

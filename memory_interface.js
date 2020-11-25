@@ -14,6 +14,29 @@ let memory_interface = {
 
     /**
      *
+     * @param {Creep} creep
+     * @param {PathStep[]} path
+     */
+    store_adjacent_path(creep, path) {
+        let tick = Game.time
+        creep.memory.adjacent_path = {'t': tick, 'p': Room.serializePath(path), 'ttl':5}
+    },
+
+    get_adjacent_path(creep) {
+        let tick = Game.time
+
+        let rec = creep.memory.adjacent_path
+
+        if (rec && tick - rec.t > rec.ttl) {
+            return Room.deserializePath(rec.p)
+        } else {
+            creep.memory.adjacent_path = null
+            return null
+        }
+    },
+
+    /**
+     *
      * @param {string} source_id
      * @param {RoomPosition} position
      */
@@ -97,8 +120,17 @@ let memory_interface = {
     set_creep_home_source(creep, source) {
 
         creep.memory.homeSource = source;
-    }
+    },
 
+
+    get safe_rooms() {
+        let rooms = MY_SAFEROOMS
+
+        if (rooms.length === 0) {
+            rooms = Memory.spawnRooms
+        }
+        return rooms
+    }
 
 
 }

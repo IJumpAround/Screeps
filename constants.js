@@ -1,8 +1,8 @@
 //GLOBAL CONSTANTS
 
 //Creep type count
-global.MY_MAX_HARVESTERS = 5;
-global.MY_MAX_UPGRADERS = 3;
+global.MY_MAX_HARVESTERS = 4;
+global.MY_MAX_UPGRADERS = 2;
 global.MY_MAX_BUILDERS = 5;
 global.MY_MAX_MOVERS = 2;
 global.MY_MAX_CLAIMERS = 0;

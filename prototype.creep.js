@@ -1,3 +1,4 @@
+let utilities = require('./utilities')
 /**
     target structure in memory
     creep.memory.target = {ID: idString, pos: {x, y, roomName}}
@@ -35,12 +36,35 @@ Creep.prototype.getTarget =
     function() {
         if(this.memory.target)
             return Game.getObjectById(this.memory.target.id);
-        else
+        else {
+            console.log(`${this.name} INVALID TARGET IN MEMORY`);
             return false;
+        }
 };
 
 
 
+
+/**
+ *
+ * @param {RoomPosition} target_pos
+ */
+Creep.prototype.move_next_to_destination = function(target_pos) {
+    target_pos.findClosestByRange();
+    let src = this.pos
+
+    let adjacent_tiles = utilities.get_adjacent_empty_tiles(target_pos);
+    let path;
+    if (adjacent_tiles.length > 0) {
+        path = src.findPathTo(adjacent_tiles[0]);
+    } else {
+        path = src.findPathTo(target_pos, { ignoreCreeps: true });
+    }
+    this.room.visual.poly(path)
+    return this.moveByPath(path)
+    // return path;
+
+}
 
 Creep.prototype.isValidTarget =
 /**

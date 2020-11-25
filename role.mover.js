@@ -97,7 +97,6 @@ let roleMover = {
         //Creep has a target already
         else{
             target = creep.getTarget();
-            console.log(`target ${target}`);
         }
 
         // console.log(`${creep.name} target: ${JSON.stringify(target)}`);
@@ -150,7 +149,7 @@ let roleMover = {
                 destinations = homeRoom.find(FIND_MY_STRUCTURES,{
                 filter : function(object)
                 {
-                    console.log(`${creep.name} Potential dropoff point ${JSON.stringify(object)}`);
+                    // console.log(`${creep.name} Potential dropoff point ${JSON.stringify(object)}`);
                     return (object.structureType === STRUCTURE_SPAWN &&
                             object.store.energy !== object.store.getCapacity(RESOURCE_ENERGY));
                 }
@@ -211,15 +210,7 @@ let roleMover = {
     },
 
 
-    /**
-     *
-     * @param {Creep} creep
-     * @param {RoomPosition} target_pos
-     */
-    path_to_dropped_resource(creep, target_pos) {
-        target_pos.lookFor()
 
-    }
 
 };
 

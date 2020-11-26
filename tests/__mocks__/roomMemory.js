@@ -1,11 +1,11 @@
 class RoomMemory {
-  controller_source_paths = {}
-  mySources = {};
+    controller_source_paths = {};
+    mySources = {};
 
-  constructor() {
+    constructor() {
 
-  }
+    }
 
 }
 
-module.exports = RoomMemory
+module.exports = RoomMemory;

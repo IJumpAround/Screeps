@@ -1,46 +1,24 @@
-require('prototype.creep');
-require('constants');
-// let roleHarvester = require('role.harvester');
-// let roleUpgrader = require('role.upgrader');
-// let roleBuilder = require('role.builder');
-// let roleMover = require('role.mover');
-// let roleClaimer = require('role.claimer');
-// let roleDefender = require('role.defender');
-// let roleHealer = require('role.healer');
-// let roomUI = require('roomUI');
-//let roomInit = require('roomInit');
-//let spawning = require('spawning');
-// let towerActions = require('towerActions');
-// let defense = require('defense');
-let spawnRoom = require('spawnRoom');
-
-// let spawning = require('updatedSpawning');
-// let helper_functions = require('helperFunctions');
-// let utilities = require('utilities');
-let memorySetup = require('memory_setup')
+require("prototype.creep");
+require("constants");
+let spawnRoom = require("./spawnRoom");
+let memorySetup = require("memory_setup");
 
 
 //global functions
-global.getPos = require('helperFunctions').getRoomPosition;
-global.getRoom = require('helperFunctions').getRoomObject;
-global.getSourcePos = require('helperFunctions').getSourcePosition;
-global.memory_interface = require('memory_interface')
-// global._ = require('lodash')
+global.getPos = require("helperFunctions").getRoomPosition;
+global.getRoom = require("helperFunctions").getRoomObject;
+global.getSourcePos = require("helperFunctions").getSourcePosition;
+global.memory_interface = require("memory_interface");
 
-memorySetup.init_memory()
+memorySetup.init_memory();
 
-
-//var targeting = require('targeting');
-
-//memory
-//Memory.reservedControllers = {id: {x,y,roomname}}
 if (Memory.spawnRooms) {
     global.MY_SAFEROOMS = Object.keys(Memory.spawnRooms);
 }
 
-
-memorySetup.load_owned_rooms()
-let planner = require('planner')
+let terrainUtils = require("terrainUtils");
+memorySetup.load_owned_rooms();
+let planner = require("planner");
 
 
 //Initializations
@@ -48,15 +26,13 @@ let planner = require('planner')
 
 //*************************************************************************************
 //BEGIN MAIN LOOP HERE
-module.exports.loop = function ()
-{
-    let tick = Game.time
-
+module.exports.loop = function() {
+    let tick = Game.time;
 
 
     //delete memory of dead creeps
-    for(let i in Memory.creeps) {
-        if(Memory.creeps.hasOwnProperty(i) && !Game.creeps[i]) {
+    for (let i in Memory.creeps) {
+        if (Memory.creeps.hasOwnProperty(i) && !Game.creeps[i]) {
             delete Memory.creeps[i];
         }
     }
@@ -65,15 +41,21 @@ module.exports.loop = function ()
     // Iterate over rooms and run logic for each room
     let rooms = Object.keys(Memory.spawnRooms);
     // console.log(`MAIN LOOP ${rooms.length}`);
-    if (MY_SAFEROOMS)
-    for(let i = 0; i < rooms.length; i++){
-        let room = rooms[i];
-        spawnRoom.run(room, tick);
 
-        planner.test_draw_lines(Game.rooms[room])
+    for (let i = 0; i < rooms.length; i++) {
+        let roomname = rooms[i];
+        let room = Game.rooms[roomname];
+        spawnRoom.run(roomname, tick);
+
+
+        planner.test_draw_lines(Game.rooms[roomname]);
         // Create road plans
         if (tick % 100 === 0) {
-            planner.source_roads(room)
+
+            planner.source_roads(roomname);
+
+            if (room.controller.owner.username === "Nickka")
+                terrainUtils._load_harvester_spots(Game.rooms[roomname]);
         }
 
     }

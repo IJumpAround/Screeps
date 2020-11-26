@@ -31,7 +31,7 @@ var roleUpgrader = {
             if (containers.length > 0) {
                 let closest = creep.pos.findClosestByPath(containers);
                 if (!creep.pos.isNearTo(closest)) {
-                    creep.move_next_to_destination(closest.pos)
+                    creep.move_next_to_destination(closest.pos, closest.id);
 
                 } else {
                     creep.withdraw(closest, RESOURCE_ENERGY);
@@ -41,7 +41,7 @@ var roleUpgrader = {
                 let droppedEnergy = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 
                 if (!creep.pos.isNearTo(droppedEnergy)) {
-                    creep.move_next_to_destination(droppedEnergy.pos)
+                    creep.move_next_to_destination(droppedEnergy.pos, droppedEnergy.id);
                 } else {
 
                     creep.pickup(droppedEnergy);

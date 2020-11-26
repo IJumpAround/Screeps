@@ -1,11 +1,12 @@
-class CreepMemory  {
-  homeSource = ""
-  upgrading = null
-  role = ""
-  spawnerRoom = ""
-  constructor() {
+class CreepMemory {
+    homeSource = "";
+    upgrading = null;
+    role = "";
+    spawnerRoom = "";
 
-  }
+    constructor() {
+
+    }
 }
 
-module.exports = CreepMemory
+module.exports = CreepMemory;

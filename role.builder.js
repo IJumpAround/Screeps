@@ -2,30 +2,28 @@ utils = require("./utilities");
 
 let roleBuilder =
     {
-        build_sites: [],
-        _safe_rooms: [],
         /** @param {Creep} creep **/
         run: function(creep) {
             // console.log(`${creep.name} START OF RUN: building: ${creep.memory.building} usedCapacity: ${creep.store.getUsedCapacity(RESOURCE_ENERGY)}
             //  building: ${creep.memory.building}  capacity: ${creep.store.getCapacity(RESOURCE_ENERGY)}`);
             //Creep needs to collect resources
             if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
-                this.end_build_mode(creep)
+                this.end_build_mode(creep);
                 creep.say("🔄 Pickup");
             }
-
             //creep has resources and can build or repair
-            if (!creep.memory.building && creep.store[RESOURCE_ENERGY] === creep.store.getCapacity(RESOURCE_ENERGY)) {
+            else if (!creep.memory.building && creep.store[RESOURCE_ENERGY] === creep.store.getCapacity(RESOURCE_ENERGY)) {
                 creep.memory.target = null;     //reset target
                 creep.memory.building = true;
                 creep.say("🚧 build");
             }
 
             //Begin build logic
-            if (creep.memory.building) {
-                this.build(creep);
-                if (this.build_sites.length === 0)
-                    this.repair(creep);
+            else if (creep.memory.building) {
+                let done_building = this.build(creep);
+
+            } else if (creep.memory.repairing) {
+                this.repair(creep);
             }
             //Retrieve some resources
             else {
@@ -34,35 +32,36 @@ let roleBuilder =
 
         },
 
-        get safe_rooms() {
-            let rooms = []
-            if (this._safe_rooms.length === 0)
-                rooms = Memory.spawnRooms
-            else
-                rooms = this._safe_rooms
-            return rooms
-
-        },
-
-        set safe_rooms(val) {
-            this._safe_rooms = val
-        },
 
         search_for_build_targets() {
-            let targets = []
-            let rooms = memory_interface.safe_rooms
+            let targets = [];
+            let rooms = memory_interface.safe_rooms;
             for (let room_name in rooms) {
                 if (Game.rooms[room_name]) {
                     let temp = Game.rooms[room_name].find(FIND_CONSTRUCTION_SITES);
                     if (temp.length > 0) {
                         targets = targets.concat(temp);
                         console.log(`targets? ${targets}`);
-                        this.build_sites = targets
                     }
 
                 }
             }
+            return targets;
         },
+        //
+        // validate_build_sites_cache() {
+        //     this.build_sites.forEach((site) => {
+        //         try {
+        //             this.build_sites
+        //             site.pos
+        //             console.log(`${site}`);
+        //         } catch(expection) {
+        //             console.log(expection.stack);
+        //             this.build_sites = []
+        //         }
+        //     })
+
+        // },
 
         /**
          *
@@ -72,19 +71,20 @@ let roleBuilder =
          */
         find_closest_construction_site(creep, sites) {
             // let closestTarget = creep.pos.findClosestByRange(sites);
-            let dist = 100
+            let dist = 100;
             let site;
+            console.log(`${creep.name} sites sites`);
             console.log(`potential sites ${sites.length}`);
             for (let i = 0; i < sites.length; i++) {
-                let site_pos = sites[i].pos
-                let curr_dist = Math.ceil(Math.sqrt(Math.pow(site_pos.x, 2) + Math.pow(site_pos.y, 2)))
+                let site_pos = sites[i].pos;
+                let curr_dist = Math.ceil(Math.sqrt(Math.pow(site_pos.x - creep.pos.x, 2) + Math.pow(site_pos.y - creep.pos.y, 2)));
 
                 if (curr_dist < dist) {
-                    dist = curr_dist
-                    site = sites[i]
+                    dist = curr_dist;
+                    site = sites[i];
                 }
             }
-            return site
+            return site;
         },
 
         /**
@@ -92,29 +92,36 @@ let roleBuilder =
          * @param creep
          */
         end_build_mode(creep) {
-            creep.memory.target = null
-            creep.memory.building = false
+            creep.memory.target = null;
+            creep.memory.building = false;
         },
         end_retrieve_mode(creep) {
-            creep.memory.target = null
+            creep.memory.target = null;
             creep.memory.building = true;
-        }  ,
+        },
 
         /**
          * @param {Creep} creep
          * @param {CreepActionReturnCode | ERR_NOT_ENOUGH_RESOURCES | ERR_RCL_NOT_ENOUGH} result
          */
-        handle_build_result(creep, result) {
+        handle_build_result(creep, result, target) {
             switch (result) {
                 case ERR_NOT_ENOUGH_RESOURCES:
                     this.end_build_mode(creep);
                     break;
 
                 case ERR_INVALID_TARGET:
-                    creep.memory.target = null
+                    // let i = this.build_sites.indexOf(target)
+                    // if (i === -1)
+                    //     this.build_sites.splice(i,1)
+                    creep.memory.target = null;
+                    break;
+                case OK:
+                    return true;
 
             }
         },
+
 
         /**
          * Do what the function name says!
@@ -123,11 +130,12 @@ let roleBuilder =
          */
         build_or_move_to_target(creep, target) {
             if (!creep.pos.inRangeTo(target, 3)) {
-                creep.moveTo(target.pos, { reusePath: 0, visualizePathStyle: { stroke: "#2f962c" } });
-                return true;
+                // creep.move_next_to_destination(target.pos, target.id)
+                creep.moveTo(target.pos, { visualizePathStyle: { stroke: "#2f9831" } });
+                return false;
             } else {
                 let result = creep.build(target);
-                this.handle_build_result(creep, result)
+                return this.handle_build_result(creep, result, target);
             }
         },
 
@@ -138,21 +146,22 @@ let roleBuilder =
          */
         get_build_target(creep) {
             let closest_target;
-            let targets = []
+            let targets = [];
             //search for targets in any room listed in MY_SAFEROOMS
 
-            if (this.build_sites.length === 0) {
-                this.search_for_build_targets()
-            }
 
-            targets = this.build_sites
+            targets = this.search_for_build_targets();
+
             //attempt to find the closest target in the list
             if (targets.length > 0) {
-                closest_target = this.find_closest_construction_site(creep, targets)
+                closest_target = this.find_closest_construction_site(creep, targets);
+                console.log(`${creep.name} closest target ${closest_target}`);
                 creep.setTarget(closest_target);
+            } else {
+                console.log("No targets at all!?!?");
             }
 
-            return closest_target
+            return closest_target;
         },
 
         /**
@@ -161,12 +170,13 @@ let roleBuilder =
          @returns {Boolean} - true if the creep is building false if there are no build sites found
          **/
         build: function(creep) {
-            creep.say('🚧 Build')
+            let done_building = false;
+            creep.say("🚧 Build");
             let target;
 
             let valid_target = creep.isValidTarget(MY_ACTION_BUILD);
             if (!valid_target) {
-                target = this.get_build_target(creep)
+                target = this.get_build_target(creep);
             }
             //creep already has a target
             else {
@@ -174,10 +184,12 @@ let roleBuilder =
             }
 
             if (target) {
-                this.build_or_move_to_target(creep, target)
+                done_building = this.build_or_move_to_target(creep, target);
             } else {
-                creep.say("Need target")
+                creep.say("Need target");
             }
+
+            return done_building;
 
         },
 
@@ -212,6 +224,7 @@ let roleBuilder =
          if the target was passed in
          **/
         findRepairTargets: function(target = null) {
+            throw new DOMException();
             let room;
             let temp;
             let targets = [];
@@ -285,78 +298,84 @@ let roleBuilder =
             }
         },
 
+
+        /**
+         *
+         * @param {Creep} creep
+         */
+        get_resource_target(creep) {
+            let target;
+            creep.say(`new 🎯`);
+            console.log(`*****${creep.name} not valid target`);
+            target = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 40);
+            target = target[0];
+            if (target) {
+                creep.setTarget(target);
+            }
+                //NOTE this stops after the first storage is found
+            //Get the location of the storage structure
+            else {
+                let rooms = Memory.spawnRooms;
+                for (let i in rooms) {
+                    let room = Game.rooms[i];
+                    target = room.storage;
+                    if (target)
+                        break;
+                }
+                //console.log(creep.name + ' ' + storage);
+                console.log(`looked through saferooms and got ${target}`);
+                if (target) {
+                    creep.setTarget(target);
+                }
+            }
+            return target;
+        },
+
+        /**
+         *
+         * @param {Creep} creep
+         * @param target
+         */
+        retrieve_or_move(creep, target) {
+            let action_result;
+            if (target) {
+                if (!creep.pos.isNearTo(target)) {
+                    // action_result = creep.move_next_to_destination(target.pos, target.id);
+                    action_result = creep.moveTo(target.pos, { visualizePathStyle: { stroke: "#008888" } });
+                } else {
+                    if (target instanceof Resource) {
+                        action_result = creep.pickup(target);
+                    } else {
+                        action_result = creep.withdraw(target, RESOURCE_ENERGY);
+                    }
+
+                    if (action_result === OK) {
+                        this.end_retrieve_mode(creep);
+                    }
+                }
+            } else {
+                console.log(`${creep.name} No retrieve target available`);
+            }
+        },
+
         /**
          @param {Creep} creep - creep performing the retrieving
          @param {Structure} [target=null] -optional target container or storage
          **/
-        retrieve: function(creep, target = null) {
+        retrieve: function(creep) {
+            //TODO Fix all this dumb shit and refactor
+            // remove construction sites from list when done
             creep.say("🔙");
-            let result;
+            let target;
             //Creep needs to choose a new target
-            if (!creep.isValidTarget(MY_ACTION_RETRIEVE)) {
-                creep.say(`new 🎯`);
-                console.log(`*****${creep.name} not valid target`);
-                let dropped = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 40);
-                dropped = dropped[0];
-                if (dropped) {
-                    creep.setTarget(dropped);
-                    result = creep.pickup(dropped);
-                    if (result === ERR_NOT_IN_RANGE)
-                        creep.moveTo(dropped.pos, { reusePath: 0, visualizePathStyle: { stroke: "#e7218e" } });
-                    else if(result === OK) {
-                        this.end_retrieve_mode(creep)
-                    }
-                }
-                    //NOTE this stops after the first storage is found
-                //Get the location of the storage structure
-                else {
-                    let storage;
-                    for (let i in MY_SAFEROOMS) {
-                        let room = Game.rooms[MY_SAFEROOMS[i]];
-                        storage = room.storage;
-                        if (storage)
-                            break;
-                    }
-                    //console.log(creep.name + ' ' + storage);
-                    if (storage) {
-                        creep.setTarget(storage);
-                        result = creep.withdraw(storage, RESOURCE_ENERGY);
-                        if (result === ERR_NOT_IN_RANGE)
-                            creep.moveTo(storage.pos, { reusePath: 0, visualizePathStyle: { stroke: "#ff0033" } });
-                    }
-                }
+            target = creep.isValidTarget(MY_ACTION_RETRIEVE);
+            if (!target) {
+                console.log("INVALID RETRIEVE TARGET");
+                target = this.get_resource_target(creep);
             }
             //Creep already has a target
-            else {
-                let target_res = creep.getTarget();
-                console.log(`${creep.name} => 🎯 GET TARGET ${JSON.stringify(target_res)}\n instanceof Resource ${target_res instanceof Resource}`);
-                if (target_res instanceof Resource) {
+            this.retrieve_or_move(creep, target);
 
-                    // creep.say(`=> 🎯 ${result}`);
-                    // result = ERR_NOT_IN_RANGE
-                    if (!creep.pos.isNearTo(target_res.pos)) {
-                        let test123 = creep.move_next_to_destination(target_res.pos)
-                        creep.say(`🚜 ${test123}`);
-
-                        creep.room.visual.text(`🎯`, target_res.pos);
-                    } else {
-                        creep.say("Pickup");
-                        // console.log(`${creep.name} waiting ${result}`);
-                        result = creep.pickup(target_res);
-                        if (result === OK) {
-                            this.end_retrieve_mode(creep)
-                        }
-                    }
-                } else {
-                    console.log(`${creep.name} withdraw`);
-                    creep.say("Withdraw");
-                    result = creep.withdraw(target_res, RESOURCE_ENERGY);
-                    if (result === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target_res.pos, { reusePath: 0, visualizePathStyle: { stroke: "#ffaa00" } });
-                    }
-                }
-
-            }
         }
     };
 

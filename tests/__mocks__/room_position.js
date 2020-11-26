@@ -1,14 +1,14 @@
 class RoomPosition {
-  x = 0
-  y = 0
-  roomName = ""
+    x = 0;
+    y = 0;
+    roomName = "";
 
-  constructor(x, y, room) {
-    this.x  = x
-    this.y = y
-    this.roomName = room;
+    constructor(x, y, room) {
+        this.x = x;
+        this.y = y;
+        this.roomName = room;
 
-  }
+    }
 }
 
-module.exports = RoomPosition
+module.exports = RoomPosition;

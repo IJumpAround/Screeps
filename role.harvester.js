@@ -2,7 +2,7 @@ var roleHarvester =
     {
 
         /** @param {Creep} creep **/
-        run: function (creep) {
+        run: function(creep) {
             //Run my harvest function
             if (creep.store.energy < creep.store.getCapacity(RESOURCE_ENERGY) * 0.89) {
                 this.harvest(creep);
@@ -20,9 +20,9 @@ var roleHarvester =
     /** @param {Creep} creep
      Choses a destination to return carried energy to
      **/
-    returnLoad: function (creep) {
+    returnLoad: function(creep) {
         //Prioritize the container placed next to the harvester
-        let container = creep.pos.findInRange(FIND_STRUCTURES, 2, {filter: {structureType: STRUCTURE_CONTAINER}});
+        let container = creep.pos.findInRange(FIND_STRUCTURES, 2, { filter: { structureType: STRUCTURE_CONTAINER } });
         //console.log(creep.name + ' ' +container);
         if (container.length === 0) {
             creep.drop(RESOURCE_ENERGY);
@@ -55,7 +55,7 @@ var roleHarvester =
      target: which contains the id of the target source
      harvesting: true when the creep is harvesting false when it is returning
      **/
-    harvest: function (creep) {
+    harvest: function(creep) {
         let homeSource;
         //TODO uncomment this when implementing new spawn
         let sourcePos = getSourcePos(creep.memory.homeSource);
@@ -71,8 +71,9 @@ var roleHarvester =
 
         //console.log(result);
         if (!creep.pos.isNearTo(homeSource)) {
-            creep.say("Moving to source")
-            creep.moveTo(homeSource.pos, { visualizePathStyle: { stroke: '#ffaa00' } });
+            creep.say("Moving to source");
+            // creep.moveTo(homeSource.pos, { visualizePathStyle: { stroke: '#ffaa00' } });
+            creep.move_next_to_destination(homeSource.pos, homeSource.id);
         } else {
             let result = creep.harvest(homeSource);
         }

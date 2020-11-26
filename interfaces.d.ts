@@ -15,6 +15,7 @@ interface SerializedRoomPosition {
 interface RoomMemory {
   controller_source_paths: {}
   mySources: { [name: string]: SerializedRoomPosition };
+  harvester_slots: {}
 }
 
 
@@ -24,7 +25,7 @@ interface CreepMemory {
   role: string
   spawnerRoom: string
   building: boolean
-  target: {[id: string]: SerializedRoomPosition}
+  target: { [id: string]: SerializedRoomPosition }
 }
 
 interface CreepCount {

@@ -6,10 +6,10 @@ var helperFunctions = {
      * @param {string} [roomName]
      * @returns {RoomPosition|boolean}
      */
-     getRoomPosition : function (x, y, roomName) {
+    getRoomPosition: function(x, y, roomName) {
         if (!x) return false;
-        console.log('test' + JSON.stringify(x))
-        if (typeof x == 'object') {
+        console.log("test" + JSON.stringify(x));
+        if (typeof x == "object") {
             var object = x;
 
             x = object.x;
@@ -20,38 +20,37 @@ var helperFunctions = {
     },
 
     /**
-    *@param {string} name
-    *@returns {Room|boolean}
-    **/
-    getRoomObject : function (name){
-        if(!name)
+     *@param {string} name
+     *@returns {Room|boolean}
+     **/
+    getRoomObject: function(name) {
+        if (!name)
             return false;
         else
             return Game.rooms[name];
     },
 
     /**
-    *Converts a source id into a sourceposition Object
-    *@requires - either vision of the source or the source position has been catalogued in memory
-    *@param {string} id - source id
-    *@returns {RoomPosition} - position object of the source
-    **/
-    getSourcePosition: function(id){
-        if(!id) {
+     *Converts a source id into a sourceposition Object
+     *@requires - either vision of the source or the source position has been catalogued in memory
+     *@param {string} id - source id
+     *@returns {RoomPosition} - position object of the source
+     **/
+    getSourcePosition: function(id) {
+        if (!id) {
             return false;
         }
-        if(typeof id == 'string'){
+        if (typeof id == "string") {
             let source = Game.getObjectById(id);
-            if(source)
+            if (source)
                 return source.pos;
             else {
-                let source_pos = memory_interface.get_source(id)
-                return getPos(source_pos)
+                let source_pos = memory_interface.get_source(id);
+                return getPos(source_pos);
             }
         }
     }
 };
-
 
 
 module.exports = helperFunctions;

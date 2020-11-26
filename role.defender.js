@@ -17,11 +17,11 @@ var roleDefender = {
                 if (!closestHostile) closestHostile = hostiles[0];
                 var result = creep.attack(closestHostile);
                 //Move to the hostile if they are a ranged creep
-                if (result == ERR_NOT_IN_RANGE && this.hasBodyPart(closestHostile, RANGED_ATTACK)) {
+                if (result === ERR_NOT_IN_RANGE && this.hasBodyPart(closestHostile, RANGED_ATTACK)) {
                     creep.moveTo(closestHostile);
                 }
                 //Move to a rampart if they are not
-                else if (result == ERR_NOT_IN_RANGE) {
+                else if (result === ERR_NOT_IN_RANGE) {
                     let closestRampart = closestHostile.pos.findClosestByRange(FIND_STRUCTURES, { filter: { structureType: STRUCTURE_RAMPART } });
                     creep.moveTo(closestRampart);
                 }
@@ -40,7 +40,7 @@ var roleDefender = {
         var body = enemyCreep.body;
         for (let i = 0; i < body.length; i++) {
             let currPart = enemyCreep.body[i];
-            if (currPart.type == part)
+            if (currPart.type === part)
                 return true;
         }
         return false;

@@ -8,7 +8,7 @@ var roleClaimer = {
         //console.log(homeControllerId);
         var inRange = creep.pos.inRangeTo(controllerPos, 1);
         //console.log(inRange);
-        if (inRange == true)
+        if (inRange === true)
             creep.reserveController(creep.room.controller);
         else {
             var test = creep.moveTo(controllerPos);

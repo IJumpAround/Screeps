@@ -58,7 +58,7 @@ var utilities = {
         for (let i in Game.creeps) {
             let currCreep = Game.creeps[i];
             let type = typeof (currCreep.memory.homeSource);
-            if (type == "string") {
+            if (type === "string") {
                 console.log("new");
 
             } else if (currCreep.memory.homeSource && type === "object") {

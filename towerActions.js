@@ -10,7 +10,7 @@ var towerActions = {
                 if (thisTower.store.energy > thisTower.store.getCapacity(RESOURCE_ENERGY) * 0.5) {
                     target = thisTower.pos.findClosestByRange(FIND_STRUCTURES, {
                         filter: (structure) => structure.hits < structure.hitsMax &&
-                            structure.structureType == STRUCTURE_ROAD ||
+                            structure.structureType === STRUCTURE_ROAD ||
                             (structure.structureType === STRUCTURE_RAMPART && structure.hits < 100)
                     });
                     thisTower.repair(target);

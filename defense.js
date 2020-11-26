@@ -27,7 +27,7 @@ var defense = {
                     console.log("area secure");
                 }
                 if (tower) {
-                    let repairs = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: (i) => i.structureType == STRUCTURE_ROAD && i.hits < i.hitsMax });
+                    let repairs = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: (i) => i.structureType === STRUCTURE_ROAD && i.hits < i.hitsMax });
 
                     tower.repair(repairs);
                 }

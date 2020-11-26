@@ -14,7 +14,7 @@ var roleHealer = {
             }
             if (closeDefender.hits < closeDefender.hitsMax) {
                 var result = creep.heal(closeDefender);
-                if (result == ERR_NOT_IN_RANGE)
+                if (result === ERR_NOT_IN_RANGE)
                     creep.moveTo(closeDefender);
             }
 
